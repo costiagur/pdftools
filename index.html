@@ -26,23 +26,27 @@
     <h5 style="text-align: center;">All the tools assume use of pdf files</h5>
    <table>
         <tr>
-          <td><a href="javascript:void()" onclick="ui.combinefromfolder()" >Merge pdf files in folder and subfolders</a></td>
+          <td><a href="#" onclick="ui.combinefromfolder()" >Merge pdf files in folder and subfolders</a></td>
         </tr>
         <tr>
-          <td><a href="javascript:void()" onclick="document.getElementById('upload_pagenum').click()">Add page numbers to one pdf file</a></td>
+          <td><a href="#" onclick="document.getElementById('upload_pagenum').click()">Add page numbers to one pdf file</a></td>
         </tr>
         <tr>
-          <td><a href="javascript:void()" onclick="document.getElementById('upload_encodepdf').click()">Encode one pdf file</a></td>
+          <td><a href="#" onclick="document.getElementById('upload_encodepdf').click()">Encode one pdf file</a></td>
         </tr>
         <tr>
-          <td><a href="javascript:void()" onclick="document.getElementById('upload_mergepdfs').click()">Merge uploaded pdf files</a></td>
+          <td><a href="#" onclick="document.getElementById('upload_mergepdfs').click()">Merge uploaded pdf files</a></td>
+        </tr>
+        <tr>
+          <td><a href="#" onclick="document.getElementById('upload_splitpdf').click()">Split one pdf file</a></td>
         </tr>
     </table>
   <br>
   <div class="w3-container" hidden>
-      <input type="file" id="upload_pagenum" multiple onchange="ui.addpagenums()">
-      <input type="file" id="upload_encodepdf" multiple onchange="ui.encodepdf()">
+      <input type="file" id="upload_pagenum" onchange="ui.addpagenums()">
+      <input type="file" id="upload_encodepdf" onchange="ui.encodepdf()">
       <input type="file" id="upload_mergepdfs" multiple onchange="ui.mergepdfs()">
+      <input type="file" id="upload_splitpdf" onchange="ui.splitpdf()">
   </div>  
     
   </body>
