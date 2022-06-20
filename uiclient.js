@@ -207,6 +207,41 @@ ui.mergepdfs = function(){
     xhr.send(fdata); 
 
 }
+//********************************************************************************************* */
+ui.splitpdf = function(){
+    var xhr = new XMLHttpRequest();
+    var fdata = new FormData();
+
+    fdata.append("request","splitpdf");
+    
+    fdata.append('uploadpdf',document.getElementById("upload_splitpdf").files[0]);
+   
+    splitafterstr = prompt("State pages to split sfter them. Comma delimited.", "1,2,3")
+
+    if (splitafterstr == null){
+        return
+    }
+
+    var splitafter = splitafterstr.split(",")
+
+    fdata.append('splitlist',JSON.stringify(splitafter));
+
+    xhr.open('POST',"http://localhost:"+ui.port,true)
+
+    xhr.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {   
+            console.log(this.responseText)
+            
+            //alert(this.responseText)
+
+            resobj = JSON.parse(this.responseText);
+
+            ui.download(resobj[0],resobj[1])
+        }
+    }
+
+    xhr.send(fdata); 
+}
 
 //********************************************************************************************* */
 ui.download = function(filename, filetext){
