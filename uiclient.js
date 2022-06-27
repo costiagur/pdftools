@@ -242,6 +242,190 @@ ui.splitpdf = function(){
 
     xhr.send(fdata); 
 }
+//********************************************************************************************** */
+ui.reorder_showdoc = function(){
+    var xhr = new XMLHttpRequest();
+    var fdata = new FormData();
+
+    fdata.append("request","reorder_showdoc");
+    
+    fdata.append('uploadpdf',document.getElementById("upload_reorder").files[0]);
+
+    xhr.open('POST',"http://localhost:"+ui.port,true)
+
+    xhr.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {   
+            //console.log(this.responseText)
+
+            resobj = JSON.parse(this.responseText);
+            
+            let tbody = "<tbody>"
+
+            for(var i=0; i<resobj.length; i++){
+                if((i+1)%4 == 1){
+                    tbody+= "<tr>"
+                }
+                tbody+=`<td><label for="check_${i}"><img src="${resobj[i]}" width="150" height="150" id="img_${i}" data-img="${i}" style="transform: rotate(0deg); filter: blur(0px)"></label><input type="checkbox" name="pagechecks" id="check_${i}" data-check="${i}">`;
+                tbody+="</td>";
+                if((i+1)%4 == 0){
+                    tbody+= "</tr>"
+                }
+            }
+
+            if((i)%4 != 0){ //in case the loop ended on remainder 1-3
+                tbody+= "</tr>"
+            }
+
+            tbody+= "</tbody>"
+            document.getElementById("reorder_tb").innerHTML = tbody;
+            document.getElementById('reorderbts').style.display = 'inline';
+
+        }
+    }
+
+    xhr.send(fdata);
+}
+//********************************************************************************************* */
+ui.rotatepage = function(){
+    var pagechecks = document.getElementsByName("pagechecks");
+    var eachpage=''
+    var rotatestage = ''
+    const regex = /[0-9]/g;
+    var newrotate = 0
+
+    for (eachpage of pagechecks){
+        if(eachpage.checked == true){
+            rotatestage = eachpage.previousSibling.firstChild.style.transform
+            rotateint = parseInt(rotatestage.match(regex).join(''))
+            newrotate = (rotateint/90 +1)*90 % 360
+            eachpage.previousSibling.firstChild.style.transform = `rotate(${newrotate}deg)` 
+        }
+    }
+}
+//********************************************************************************************* */
+ui.delpage = function(){
+    var pagechecks = document.getElementsByName("pagechecks");
+    var eachpage=''
+    var deletestage = '0px'
+
+    for (eachpage of pagechecks){
+        if(eachpage.checked == true){
+            deletestage = eachpage.previousSibling.firstChild.style.filter
+            if (deletestage == 'blur(0px)'){
+                eachpage.previousSibling.firstChild.style.filter= 'blur(5px)';
+            }
+            else{
+                eachpage.previousSibling.firstChild.style.filter= 'blur(0px)';
+            }
+        }
+    }
+}
+//********************************************************************************************* */
+ui.movepage = function(){
+    var moverate = parseInt(document.getElementById('move_in').value);   
+    if (moverate == 0){
+        return;
+    }
+
+    var pagechecks = document.getElementsByName("pagechecks");
+
+    var movercheck=0;
+    var moverimg = 0;
+    var placesmap = new Map();
+    var imgmap = new Map();
+    var wheremove = 0;
+    var j = 0;
+
+    for (let eachpage of pagechecks){
+        placesmap.set(parseInt(eachpage.dataset.check),parseInt(eachpage.previousSibling.firstChild.dataset.img))
+        imgmap.set(parseInt(eachpage.previousSibling.firstChild.dataset.img),eachpage.previousSibling.firstChild.src)
+    }
+
+    for (let eachpage of pagechecks){
+        if(eachpage.checked == true){
+            movercheck = parseInt(eachpage.dataset.check) //mover's current place
+            moverimg = placesmap.get(movercheck)//movers id
+            wheremove = Math.min(Math.max(movercheck + moverate,0),placesmap.size-1) //movement no less than to 0 and no more than to last page
+            
+            if (moverate < 0){
+                for (let i = movercheck - 1; i >= wheremove; i--){
+                    let currentimg_in_place = placesmap.get(i)
+                    placesmap.set(i+1,currentimg_in_place)
+                }
+                placesmap.set(wheremove,moverimg)
+            }
+            if (moverate > 0){
+                for (let i = movercheck + 1; i <= wheremove; i++){
+                    let currentimg_in_place = placesmap.get(i)
+                    placesmap.set(i-1,currentimg_in_place)
+                }
+                placesmap.set(wheremove,moverimg)
+            }             
+        }
+    }
+
+    var tbody = "<tbody>"
+
+    for(j=0; j<imgmap.size; j++){
+
+        if((j+1)%4 == 1){
+            tbody+= "<tr>"
+        }
+        tbody+=`<td><label for="check_${j}"><img src="${imgmap.get(placesmap.get(j))}" width="150" height="150" id="img_${placesmap.get(j)}" data-img="${placesmap.get(j)}" style="transform: rotate(0deg); filter: blur(0px)"></label><input type="checkbox" name="pagechecks" id="check_${j}" data-check="${j}">`;
+        tbody+="</td>";
+        if((j+1)%4 == 0){
+            tbody+= "</tr>"
+        }
+    }
+
+    if((j)%4 != 0){ //in case the loop ended on remainder 1-3
+        tbody+= "</tr>"
+    }
+
+    tbody+= "</tbody>"
+    document.getElementById("reorder_tb").innerHTML = tbody;
+    
+}
+//********************************************************************************************** */
+ui.finalizereorder = function(){
+    var xhr = new XMLHttpRequest();
+    var fdata = new FormData();
+    var placesobj = {};
+    var pagechecks = document.getElementsByName("pagechecks");
+    const regex = /[0-9]/g;
+
+    for (let eachpage of pagechecks){
+        let rotatestage = eachpage.previousSibling.firstChild.style.transform
+        let rotate = rotatestage.match(regex).join('')
+        let deletestage = eachpage.previousSibling.firstChild.style.filter
+
+        placesobj[eachpage.dataset.check] = [eachpage.previousSibling.firstChild.dataset.img,rotate,(deletestage == 'blur(0px)')?0:1]
+    }
+
+    fdata.append("request","reorder_commit");
+    
+    fdata.append("placesobj",JSON.stringify(placesobj));
+
+    console.log(JSON.stringify(placesobj))
+
+    fdata.append('uploadpdf',document.getElementById("upload_reorder").files[0]);
+
+    xhr.open('POST',"http://localhost:"+ui.port,true)
+
+    xhr.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {   
+            console.log(this.responseText)
+            
+            //alert(this.responseText)
+
+            resobj = JSON.parse(this.responseText);
+
+            ui.download(resobj[0],resobj[1])
+        }
+    }
+
+    xhr.send(fdata);
+}
 
 //********************************************************************************************* */
 ui.download = function(filename, filetext){

@@ -24,7 +24,9 @@
   <body>
     <h2 style="text-align: center;">PDF File Manipulation Tools</h2>
     <h5 style="text-align: center;">All the tools assume use of pdf files</h5>
-   <table>
+    <div class="w3-cell-row">
+    <div class="w3-container w3-cell">
+    <table>
         <tr>
           <td><a href="#" onclick="ui.combinefromfolder()" >Merge pdf files in folder and subfolders</a></td>
         </tr>
@@ -40,16 +42,37 @@
         <tr>
           <td><a href="#" onclick="document.getElementById('upload_splitpdf').click()">Split one pdf file</a></td>
         </tr>
+        <tr>
+          <td><a href="#" onclick="document.getElementById('upload_reorder').click()">Reorder one pdf file</a></td>
+        </tr>
+        <tr id='reorderbts' style="display: none;">
+          <td><a href="#" onclick="ui.rotatepage()">Rotate</a></td>
+          <td><a href="#" onclick="ui.delpage()">Delete</a></td>
+          <td><a href="#" onclick="ui.movepage()">Move</a></td>
+          <td><input type="number" id="move_in" value="0" size="4"></td>
+          <td><a href="#" onclick="ui.finalizereorder()">Do</a></td>
+        </tr>
+
     </table>
-  <br>
-  <div class="w3-container" hidden>
-      <input type="file" id="upload_pagenum" onchange="ui.addpagenums()">
-      <input type="file" id="upload_encodepdf" onchange="ui.encodepdf()">
-      <input type="file" id="upload_mergepdfs" multiple onchange="ui.mergepdfs()">
-      <input type="file" id="upload_splitpdf" onchange="ui.splitpdf()">
-  </div>  
-    
-  </body>
+  </div>
+
+  <div class="w3-container w3-cell">
+    <table id="reorder_tb"></table>
+  </div>
+</div>
+ 
+<br>  
+  
+<div class="w3-container" hidden>
+  <input type="file" id="upload_pagenum" onchange="ui.addpagenums()">
+  <input type="file" id="upload_encodepdf" onchange="ui.encodepdf()">
+  <input type="file" id="upload_mergepdfs" multiple onchange="ui.mergepdfs()">
+  <input type="file" id="upload_splitpdf" onchange="ui.splitpdf()">
+  <input type="file" id="upload_reorder" onchange="ui.reorder_showdoc()">
+</div>  
+
+
+</body>
 
   <script src='uiclient.js'></script>
 
