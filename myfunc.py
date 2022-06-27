@@ -5,6 +5,8 @@ from addpagenums import addpagenums
 from encodepdf import encodepdf
 from mergepdfs import mergepdfs
 from splitpdf import splitpdf
+from reorder_showdoc import reorder_showdoc
+from reorder_commit import reorder_commit
 
 def myfunc(queryobj):
 
@@ -48,6 +50,19 @@ def myfunc(queryobj):
         replymsg = json.dumps(["result.zip",file64dec]).encode('UTF-8')
 
     #
+    elif postdict["request"] == "reorder_showdoc":
+        replymsg = reorder_showdoc(filesdict["uploadpdf"][1]).encode('UTF-8')   
+    
+    #
+    elif postdict["request"] == "reorder_commit":
+        placesdict = json.loads(postdict["placesobj"])
+
+        file64enc = base64.b64encode(reorder_commit(filesdict["uploadpdf"][1],placesdict))
+        file64dec = file64enc.decode()
+        replymsg = json.dumps(["result.pdf",file64dec]).encode('UTF-8')
+    
+    #
+
 
     # reply message should be encoded to be sent back to browser ----------------------------------------------
     # encoding to base64 is used to send ansi hebrew data. it is decoded to become string and put into json.
