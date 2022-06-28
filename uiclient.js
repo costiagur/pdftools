@@ -338,7 +338,7 @@ ui.movepage = function(){
 
     for (let eachpage of pagechecks){
         placesmap.set(parseInt(eachpage.dataset.check),parseInt(eachpage.previousSibling.firstChild.dataset.img))
-        imgmap.set(parseInt(eachpage.previousSibling.firstChild.dataset.img),eachpage.previousSibling.firstChild.src)
+        imgmap.set(parseInt(eachpage.previousSibling.firstChild.dataset.img),[eachpage.previousSibling.firstChild.src,eachpage.previousSibling.firstChild.style.transform,eachpage.previousSibling.firstChild.style.filter])
     }
 
     for (let eachpage of pagechecks){
@@ -371,7 +371,7 @@ ui.movepage = function(){
         if((j+1)%4 == 1){
             tbody+= "<tr>"
         }
-        tbody+=`<td><label for="check_${j}"><img src="${imgmap.get(placesmap.get(j))}" width="150" height="150" id="img_${placesmap.get(j)}" data-img="${placesmap.get(j)}" style="transform: rotate(0deg); filter: blur(0px)"></label><input type="checkbox" name="pagechecks" id="check_${j}" data-check="${j}">`;
+        tbody+=`<td><label for="check_${j}"><img src="${imgmap.get(placesmap.get(j))[0]}" width="150" height="150" id="img_${placesmap.get(j)}" data-img="${placesmap.get(j)}" style="transform: ${imgmap.get(placesmap.get(j))[1]}; filter: ${imgmap.get(placesmap.get(j))[2]};"></label><input type="checkbox" name="pagechecks" id="check_${j}" data-check="${j}">`;
         tbody+="</td>";
         if((j+1)%4 == 0){
             tbody+= "</tr>"
