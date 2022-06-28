@@ -1,2 +1,2 @@
 # pdftools
-tools to manipulate pdf files
+Tools to manipulate pdf files. Activation by running servhttp.py.
