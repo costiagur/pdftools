@@ -54,6 +54,10 @@ ui.onloadfunc = function(){
                 }           
             }
         }
+        else if (this.readyState == 4 && this.status != 200){
+            alert(this.responseText)
+        }
+
     };
     
     xhr.send(fdata);
@@ -86,6 +90,10 @@ ui.submit = function(){ //request can be insert or update
 
             ui.download(resobj[0],resobj[1])
         }
+        else if (this.readyState == 4 && this.status != 200){
+            alert(this.responseText)
+        }
+
     }
 
     xhr.send(fdata);     
@@ -102,7 +110,7 @@ ui.combinefromfolder = function(){ //request can be insert or update
 
     xhr.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {   
-            console.log(this.responseText)
+            //console.log(this.responseText)
             
             //alert(this.responseText)
 
@@ -110,6 +118,10 @@ ui.combinefromfolder = function(){ //request can be insert or update
 
             ui.download(resobj[0],resobj[1])
         }
+        else if (this.readyState == 4 && this.status != 200){
+            alert(this.responseText)
+        }
+
     }
 
     xhr.send(fdata);     
@@ -142,6 +154,10 @@ ui.addpagenums = function(){ //request can be insert or update
 
             ui.download(resobj[0],resobj[1])
         }
+        else if (this.readyState == 4 && this.status != 200){
+            alert(this.responseText)
+        }
+
     }
 
     xhr.send(fdata);     
@@ -174,6 +190,10 @@ ui.encodepdf = function(){
 
             ui.download(resobj[0],resobj[1])
         }
+        else if (this.readyState == 4 && this.status != 200){
+            alert(this.responseText)
+        }
+
     }
 
     xhr.send(fdata); 
@@ -202,6 +222,10 @@ ui.mergepdfs = function(){
 
             ui.download(resobj[0],resobj[1])
         }
+        else if (this.readyState == 4 && this.status != 200){
+            alert(this.responseText)
+        }
+
     }
 
     xhr.send(fdata); 
@@ -238,6 +262,10 @@ ui.splitpdf = function(){
 
             ui.download(resobj[0],resobj[1])
         }
+        else if (this.readyState == 4 && this.status != 200){
+            alert(this.responseText)
+        }
+
     }
 
     xhr.send(fdata); 
@@ -280,6 +308,9 @@ ui.reorder_showdoc = function(){
             document.getElementById("reorder_tb").innerHTML = tbody;
             document.getElementById('reorderbts').style.display = 'inline';
 
+        }
+        else if (this.readyState == 4 && this.status != 200){
+            alert(this.responseText)
         }
     }
 
@@ -422,11 +453,31 @@ ui.finalizereorder = function(){
 
             ui.download(resobj[0],resobj[1])
         }
+        else if (this.readyState == 4 && this.status != 200){
+            alert(this.responseText)
+        }
+
     }
 
     xhr.send(fdata);
 }
+//********************************************************************************************* */
+ui.selectall = function(){
 
+    var pagechecks = document.getElementsByName("pagechecks");
+
+    if (pagechecks[0].checked == true){
+        for (let eachpage of pagechecks){
+            eachpage.checked = false
+        }
+    }
+    else{
+        for (let eachpage of pagechecks){
+            eachpage.checked = true
+        }
+    }
+
+}
 //********************************************************************************************* */
 ui.download = function(filename, filetext){
 
