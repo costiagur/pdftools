@@ -170,7 +170,7 @@ ui.encodepdf = function(){
 
     password = prompt("Insert password", "123456")
 
-    if (startingpage == null){
+    if (password == null){
         return
     }
 
