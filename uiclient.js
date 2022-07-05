@@ -51,7 +51,8 @@ ui.onloadfunc = function(){
             
                         document.getElementById(key).value = res.args[key];
                     }
-                }           
+
+                }
             }
         }
         else if (this.readyState == 4 && this.status != 200){
@@ -116,7 +117,13 @@ ui.combinefromfolder = function(){ //request can be insert or update
 
             resobj = JSON.parse(this.responseText);
 
-            ui.download(resobj[0],resobj[1])
+            if (atob(resobj[1]) == 'saved'){
+                alert('saved to folder')
+                return
+            }
+            else{
+                ui.download(resobj[0],resobj[1])
+            }
         }
         else if (this.readyState == 4 && this.status != 200){
             alert(this.responseText)
@@ -220,7 +227,14 @@ ui.mergepdfs = function(){
 
             resobj = JSON.parse(this.responseText);
 
-            ui.download(resobj[0],resobj[1])
+            if (atob(resobj[1]) == 'saved'){
+                alert('saved to folder')
+                return
+            }
+            else{
+                ui.download(resobj[0],resobj[1])
+            }
+            
         }
         else if (this.readyState == 4 && this.status != 200){
             alert(this.responseText)
