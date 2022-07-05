@@ -1,19 +1,19 @@
-import os
 import tkinter
 from tkinter import filedialog
 from PyPDF2 import PdfFileMerger
-from io import BytesIO
+from tempfile import NamedTemporaryFile
+from os import unlink,path,replace,walk
 
 def combinefromfolder():
 
     root = tkinter.Tk()
     searchdir = filedialog.askdirectory(title='Select the Parent Directory')
     merger = PdfFileMerger()
-    targio = BytesIO()
+    resfile = NamedTemporaryFile(mode="w+b",delete=False,suffix=".pdf", prefix="result")
 
     print("searchdir: " + searchdir)
 
-    for upperdir, dirs, files in os.walk(top=searchdir, topdown=False):
+    for upperdir, dirs, files in walk(top=searchdir, topdown=False):
         print("files: " + str(files))
         print("dirs: " + str(dirs))
         print("upperdir: " + str(upperdir))
@@ -24,12 +24,25 @@ def combinefromfolder():
             #
         #
     #
-    merger.write(targio)
+    merger.write(resfile)
     merger.close()
+    resfile.close()
+
+    if path.getsize(resfile.name) > 5000000:
+
+        target = filedialog.askdirectory(title='Select Target Directory')
+        replace(resfile.name,target + r'/result.pdf')
+        resbytes = b'saved'
+
+    else:
+        res = open(resfile.name,"rb")
+        resbytes = res.read()
+        res.close()
+        unlink(resfile.name)
+    #
 
     root.destroy()
-
     root.mainloop()
 
-    return targio.getvalue()
+    return resbytes
 #
