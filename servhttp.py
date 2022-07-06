@@ -30,9 +30,8 @@ def main():
         querystr = "{" + ",".join(arglist) + "}"
     #
 
-    #currentfolder =  os.path.dirname(os.path.realpath(__file__))
-    currentfolder = os.getcwd()
-
+    currentfolder =  os.path.dirname(os.path.realpath(__file__))
+    
     ctypes.windll.user32.ShowWindow( ctypes.windll.kernel32.GetConsoleWindow(), 0)
 
     htmlfilepath = "file://" + currentfolder + "/index.html"
