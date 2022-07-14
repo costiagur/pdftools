@@ -2,12 +2,11 @@ import http.server
 import post
 from sys import exit
 
-
 class Handler(http.server.BaseHTTPRequestHandler):
+
     def setcodeword(self, codestr):
         self.CODESTR = codestr
-        self.REPLIYED = 0
-        
+        self.REPLIYED = 0       
     #
 
     def setnewport(self,newPORT,querystr):
