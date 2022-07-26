@@ -1,6 +1,8 @@
 import http.server
 import post
 from sys import exit
+from tkinter import messagebox
+import tkinter
 
 class Handler(http.server.BaseHTTPRequestHandler):
 
@@ -20,21 +22,30 @@ class Handler(http.server.BaseHTTPRequestHandler):
 
     def processing(self,queryobj):
         
-        postlist = queryobj._POST()
+        try:
+            postlist = queryobj._POST()
 
-        if('request' in postlist.keys()):
-            if postlist['request'] == 'close':
-                exit()
+            if('request' in postlist.keys()):
+                if postlist['request'] == 'close':
+                    exit()
+                #
+                elif postlist['request'] == self.CODESTR:
+                    Handler.REPLIYED = 1 #this class is never initiated. therefore using here self doesn't update the value of self.REPLIYED in the setcodeword() and isrepliyed(). instead using specifically the name of the class
+
+                    returnstr = '{"port":' + str(self.newPORT) + ', "args":' + self.querystr + '}'
+
+                    return returnstr.encode()
             #
-            elif postlist['request'] == self.CODESTR:
-                Handler.REPLIYED = 1 #this class is never initiated. therefore using here self doesn't update the value of self.REPLIYED in the setcodeword() and isrepliyed(). instead using specifically the name of the class
 
-                returnstr = '{"port":' + str(self.newPORT) + ', "args":' + self.querystr + '}'
-
-                return returnstr.encode()
+            return Handler.funcobj(queryobj)
+        
+        except Exception as e:
+            root = tkinter.Tk()
+            root.attributes("-topmost", 1)
+            messagebox.showerror(title="webserv_Handler", message=e)
+            root.destroy()
+            root.mainloop()
         #
-
-        return Handler.funcobj(queryobj)
     #
 
     def set_headers(self):

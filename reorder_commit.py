@@ -1,9 +1,7 @@
 from PyPDF2 import PdfFileReader, PdfFileWriter
 from io import BytesIO
-import logging
+from tkinter import messagebox
 import tkinter
-
-logger = logging.getLogger('pdftoolslog.reorder_commit')
 
 def reorder_commit(uploadfile,placesdict):
     
@@ -44,11 +42,11 @@ def reorder_commit(uploadfile,placesdict):
 
     except Exception as e:
         root = tkinter.Tk()
-        tkinter.messagebox.showerror(title="reorder_commit",message=e)
+        root.attributes("-topmost", 1)
+        messagebox.showerror(title="reorder_commit",message=e)
         root.destroy()
         root.mainloop()
-       
-        logger.error(e)
+
     #
    
 #    

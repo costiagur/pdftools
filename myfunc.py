@@ -7,11 +7,9 @@ from mergepdfs import mergepdfs
 from splitpdf import splitpdf
 from reorder_showdoc import reorder_showdoc
 from reorder_commit import reorder_commit
-import logging
 from downloadpoppler import downloadpoppler
+from tkinter import messagebox
 import tkinter
-
-logger = logging.getLogger('pdftoolslog.myfunc')
 
 def myfunc(queryobj):   
 
@@ -70,8 +68,6 @@ def myfunc(queryobj):
             replymsg = json.dumps(["result.pdf",file64dec]).encode('UTF-8')
         
         #
-
-
         # reply message should be encoded to be sent back to browser ----------------------------------------------
         # encoding to base64 is used to send ansi hebrew data. it is decoded to become string and put into json.
         # json is encoded to be sent to browser.
@@ -81,11 +77,9 @@ def myfunc(queryobj):
 
     except Exception as e:
         root = tkinter.Tk()
-        tkinter.messagebox.showerror(title="myfunc",message=e)
+        root.attributes("-topmost", 1)
+        messagebox.showerror(title="myfunc",message=e)
         root.destroy()
         root.mainloop()
-
-        logger.error(e)
     #
-
 #

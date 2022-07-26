@@ -3,10 +3,7 @@ from io import BytesIO
 from tempfile import NamedTemporaryFile
 from os import unlink,path,replace
 import tkinter
-from tkinter import filedialog
-import logging
-
-logger = logging.getLogger('pdftoolslog.mergepdfs')
+from tkinter import filedialog, messagebox
 
 def mergepdfs(filesdict):
 
@@ -23,13 +20,11 @@ def mergepdfs(filesdict):
         merger.close()
         resfile.close()
 
-        #print(path.getsize(resfile.name))
-
         if path.getsize(resfile.name) > 5000000:
 
             root = tkinter.Tk()
-
-            target = filedialog.askdirectory(title='Select Target Directory')
+            root.attributes("-topmost", 1)
+            target = filedialog.askdirectory(title='Select Folder to Save')
             replace(resfile.name,target + r'/result.pdf')
             resbytes = b'saved'
 
@@ -46,12 +41,10 @@ def mergepdfs(filesdict):
         return resbytes
 
     except Exception as e:
-
         root = tkinter.Tk()
-        tkinter.messagebox.showerror(title="mergepdfs",message=e)
+        root.attributes("-topmost", 1)
+        messagebox.showerror(title="mergepdfs",message=e)
         root.destroy()
         root.mainloop()
-
-        logger.error(e)
-    #
+   #
 #
