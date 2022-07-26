@@ -4,11 +4,10 @@ import base64
 from PIL import Image
 import json
 from io import BytesIO
-import logging
 import os
+from tkinter import messagebox
 import tkinter
 
-logger = logging.getLogger('pdftoolslog.reorder_showdoc')
 
 def reorder_showdoc(uploadfile): #images to display in JS
 
@@ -18,11 +17,6 @@ def reorder_showdoc(uploadfile): #images to display in JS
         currentfolder = os.path.dirname(os.path.realpath(__file__))
 
         poppath = currentfolder + '\\poppler\\' + os.listdir(currentfolder +'\\poppler\\')[0] + "\\Library\\bin"
-
-        #root = tkinter.Tk()
-        #tkinter.messagebox.showerror(title="PDFTools",message=poppath)
-        #root.destroy()
-        #root.mainloop()
 
         images = convert_from_bytes(uploadfile, dpi=200, output_folder= draftdir.name, poppler_path=poppath)
 
@@ -42,11 +36,10 @@ def reorder_showdoc(uploadfile): #images to display in JS
 
     except Exception as e:
         root = tkinter.Tk()
-        tkinter.messagebox.showerror(title="reorder_showdoc",message=e)
+        root.attributes("-topmost", 1)
+        messagebox.showerror(title="reorder_showdoc",message=e)
         root.destroy()
         root.mainloop()
-
-        logger.error(e)
     #
        
 #

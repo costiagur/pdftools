@@ -107,10 +107,15 @@ ui.combinefromfolder = function(){ //request can be insert or update
 
     fdata.append("request","combinefromfolder");
 
-     xhr.open('POST',"http://localhost:"+ui.port,true)
+    xhr.open('POST',"http://localhost:"+ui.port,true)
+
+    document.getElementById("loader").style.display='block'; //display loader
 
     xhr.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {   
+
+            document.getElementById("loader").style.display='none'; //display loader
+
             //console.log(this.responseText)
             
             //alert(this.responseText)
@@ -151,15 +156,25 @@ ui.addpagenums = function(){ //request can be insert or update
 
     xhr.open('POST',"http://localhost:"+ui.port,true)
 
+    document.getElementById("loader").style.display='block'; //display loader
+
     xhr.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {   
             console.log(this.responseText)
+
+            document.getElementById("loader").style.display='none'; //display loader
             
             //alert(this.responseText)
 
             resobj = JSON.parse(this.responseText);
 
-            ui.download(resobj[0],resobj[1])
+            if (atob(resobj[1]) == 'saved'){
+                alert('saved to folder')
+                return
+            }
+            else{
+                ui.download(resobj[0],resobj[1])
+            }
         }
         else if (this.readyState == 4 && this.status != 200){
             alert(this.responseText)
@@ -187,15 +202,25 @@ ui.encodepdf = function(){
 
     xhr.open('POST',"http://localhost:"+ui.port,true)
 
+    document.getElementById("loader").style.display='block'; //display loader
+
     xhr.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {   
             console.log(this.responseText)
+
+            document.getElementById("loader").style.display='none'; //display loader
             
             //alert(this.responseText)
 
             resobj = JSON.parse(this.responseText);
 
-            ui.download(resobj[0],resobj[1])
+            if (atob(resobj[1]) == 'saved'){
+                alert('saved to folder')
+                return
+            }
+            else{
+                ui.download(resobj[0],resobj[1])
+            }
         }
         else if (this.readyState == 4 && this.status != 200){
             alert(this.responseText)
@@ -219,9 +244,13 @@ ui.mergepdfs = function(){
 
     xhr.open('POST',"http://localhost:"+ui.port,true)
 
+    document.getElementById("loader").style.display='block'; //display loader
+
     xhr.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {   
             console.log(this.responseText)
+
+            document.getElementById("loader").style.display='none'; //display loader
             
             //alert(this.responseText)
 
@@ -254,7 +283,7 @@ ui.splitpdf = function(){
     
     fdata.append('uploadpdf',document.getElementById("upload_splitpdf").files[0]);
    
-    splitafterstr = prompt("State pages to split sfter them. Comma delimited.", "1,2,3")
+    splitafterstr = prompt("State pages to split after them. Comma delimited.", "1,2,3")
 
     if (splitafterstr == null){
         return
@@ -266,10 +295,15 @@ ui.splitpdf = function(){
 
     xhr.open('POST',"http://localhost:"+ui.port,true)
 
+    document.getElementById("loader").style.display='block'; //display loader
+
     xhr.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {   
+
             console.log(this.responseText)
-            
+
+            document.getElementById("loader").style.display='none'; //display loader
+
             //alert(this.responseText)
 
             resobj = JSON.parse(this.responseText);
@@ -301,9 +335,13 @@ ui.reorder_showdoc = function(){
 
     xhr.open('POST',"http://localhost:"+ui.port,true)
 
+    document.getElementById("loader").style.display='block'; //display loader
+
     xhr.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {   
             //console.log(this.responseText)
+
+            document.getElementById("loader").style.display='none'; //display loader
 
             resobj = JSON.parse(this.responseText);
             
@@ -463,9 +501,13 @@ ui.finalizereorder = function(){
 
     xhr.open('POST',"http://localhost:"+ui.port,true)
 
+    document.getElementById("loader").style.display='block'; //display loader
+
     xhr.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {   
             console.log(this.responseText)
+
+            document.getElementById("loader").style.display='none'; //display loader
             
             //alert(this.responseText)
 

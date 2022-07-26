@@ -17,11 +17,29 @@
       td:hover {
         background-color: lightgray;
       }
-    </style>
-  </head>
+
+      .loader { 
+      border: 16px solid #f3f3f3;
+      border-radius: 50%;
+      border-top: 16px solid #3498db;
+      width: 50px;
+      height: 50px;
+      animation: spin 2s linear infinite;
+      position: absolute; 
+      top: 30%; left: 50%; z-index:2;
+      }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+      }
+
+  </style>
+</head>
 
 
   <body>
+    <div id="loader" class="loader" style="display: none;"></div> <!--circle displayed while working-->
     <h2 style="text-align: center;">PDF File Manipulation Tools</h2>
     <h5 style="text-align: center;">All the tools assume use of pdf files</h5>
     <div class="w3-cell-row">

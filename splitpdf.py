@@ -1,13 +1,10 @@
 from PyPDF2 import PdfFileReader, PdfFileWriter
 from io import BytesIO
 from tempfile import NamedTemporaryFile
-from os import unlink, system
+from os import unlink
 import zipfile
-import logging
 import tkinter
-from tkinter import filedialog
-
-logger = logging.getLogger('pdftoolslog.splitpdf')
+from tkinter import filedialog, messagebox
 
 def splitpdf(inipdffile,splitlist):
     
@@ -84,7 +81,8 @@ def splitpdf(inipdffile,splitlist):
 
         if zipbite.getbuffer().nbytes > 5000000:
             root = tkinter.Tk()
-            target = filedialog.askdirectory(title='Select Target Directory')
+            root.attributes("-topmost", 1)
+            target = filedialog.askdirectory(title='Select Folder to Save')
             with open(target + r'/result.zip','wb') as zf:
                 zf.write(zipbite.getbuffer())  
             #  
@@ -101,11 +99,11 @@ def splitpdf(inipdffile,splitlist):
         return res
 
     except Exception as e:
-        root = tkinter.Tk()
-        tkinter.messagebox.showerror(title="splitpdf",message=e)
-        root.destroy()
-        root.mainloop()
-        
-        logger.error(e)
+       root = tkinter.Tk()
+       root.attributes("-topmost", 1)
+       messagebox.showerror(title="splitpdf",message=e)
+       root.destroy()
+       root.mainloop()
+ 
     #
 #

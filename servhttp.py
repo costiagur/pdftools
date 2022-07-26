@@ -5,20 +5,12 @@ from sys import argv
 import random
 import ctypes
 from myfunc import myfunc
-import logging
+from tkinter import messagebox
 import tkinter
 
 def main():
-    logger = logging.getLogger('pdftoolslog.main')
-    logger.setLevel(logging.ERROR)
-    elog = logging.FileHandler('errlog.log')
-    elog.setLevel(logging.ERROR)
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    elog.setFormatter(formatter)
-    logger.addHandler(elog)
-
+ 
     try:
-
         HOST = '127.0.0.1'
         iniPORT = 50000
         newPORT = random.randint(50000,60000)
@@ -61,13 +53,11 @@ def main():
     #
 
     except Exception as e:
-
         root = tkinter.Tk()
-        tkinter.messagebox.showerror(title="Main",message=e)
+        root.attributes("-topmost", 1)
+        messagebox.showerror(title="Main", message=e)
         root.destroy()
         root.mainloop()
-
-        logger.error(e)
     #
 #
 

@@ -2,22 +2,20 @@ from fpdf import FPDF
 from PyPDF2 import PdfFileReader, PdfFileWriter
 from io import BytesIO
 from tempfile import NamedTemporaryFile
-from os import unlink #, system
-import logging
+from tkinter import messagebox, filedialog
 import tkinter
-
-logger = logging.getLogger('pdftoolslog.addpagenums')
+from os import path, replace, unlink
 
 def addpagenums(startpage, inipdffile):
-
+ 
     try:
         startpage = int(startpage)
-
+ 
         pdfReader = PdfFileReader(BytesIO(inipdffile))
         pdfWriter = PdfFileWriter()
-        resfile= BytesIO()
+        resfile= NamedTemporaryFile(mode="w+b",delete=False,suffix=".pdf", prefix="result")      
 
-        for i in range(0,pdfReader.numPages):   
+        for i in range(0,pdfReader.numPages):
 
             currentpage = pdfReader.getPage(i)
             currentpage.compress_content_streams()
@@ -44,41 +42,48 @@ def addpagenums(startpage, inipdffile):
 
             pdflass.output(name=pagefile.name, dest ='F')
 
-            #pagefile.close()
             pagefile.seek(0)
-            #print(pagefile.read())
-            #system(pagefile.name)
 
             pdfReadnumfile = PdfFileReader(pagefile)
-            #pdfReadnumfile = PdfFileReader(open(pagefile.name, "rb"))
             numpage = pdfReadnumfile.getPage(0)
             numpage.compress_content_streams()
             currentpage.merge_page(numpage)
             currentpage.compress_content_streams()
             pdfWriter.addPage(currentpage)
+            
             pdfWriter.write(resfile)
-    
-            pagefile.close()
-            unlink(pagefile.name)
-        #
-        
-        resfile.seek(0)
 
-        resfiledata = resfile.read()
+            pagefile.close()
+            unlink(pagefile.name) 
+        #
 
         resfile.close()
+        
+        if path.getsize(resfile.name) > 5000000:
+            root = tkinter.Tk()
+            root.attributes("-topmost", 1)
+            target = filedialog.askdirectory(title='Select Folder to Save')
+            root.destroy()
+            root.mainloop()
 
-        return resfiledata
+            replace(resfile.name,target + r'/result.pdf')
+            resbytes = b'saved'
+ 
+        else:
+            res = open(resfile.name,"rb")
+            resbytes = res.read()
+            res.close()
+            unlink(resfile.name)
+        #
 
+        return resbytes
+        
     except Exception as e:
-
         root = tkinter.Tk()
-        tkinter.messagebox.showerror(title="addpagenums",message=e)
+        root.attributes("-topmost", 1)
+        messagebox.showerror(title="addpagenums",message=e) 
         root.destroy()
         root.mainloop()
-
-        logger.error(e)
-    #
 #
 
 
