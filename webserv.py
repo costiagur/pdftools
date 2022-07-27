@@ -1,8 +1,7 @@
 import http.server
 import post
 from sys import exit
-from tkinter import messagebox
-import tkinter
+import common
 
 class Handler(http.server.BaseHTTPRequestHandler):
 
@@ -40,13 +39,10 @@ class Handler(http.server.BaseHTTPRequestHandler):
             return Handler.funcobj(queryobj)
         
         except Exception as e:
-            root = tkinter.Tk()
-            root.attributes("-topmost", 1)
-            messagebox.showerror(title="webserv_Handler", message=e)
-            root.destroy()
-            root.mainloop()
+            common.errormsg(title=__name__,message=e)
         #
     #
+    
 
     def set_headers(self):
         self.send_response(200) 

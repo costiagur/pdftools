@@ -8,8 +8,7 @@ from splitpdf import splitpdf
 from reorder_showdoc import reorder_showdoc
 from reorder_commit import reorder_commit
 from downloadpoppler import downloadpoppler
-from tkinter import messagebox
-import tkinter
+import common
 
 def myfunc(queryobj):   
 
@@ -76,10 +75,8 @@ def myfunc(queryobj):
     #
 
     except Exception as e:
-        root = tkinter.Tk()
-        root.attributes("-topmost", 1)
-        messagebox.showerror(title="myfunc",message=e)
-        root.destroy()
-        root.mainloop()
+        common.errormsg(title=__name__,message=e)
+        return b'Error: ' + str(e).encode()
+        
     #
 #

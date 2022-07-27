@@ -2,8 +2,7 @@ from fpdf import FPDF
 from PyPDF2 import PdfFileReader, PdfFileWriter
 from io import BytesIO
 from tempfile import NamedTemporaryFile
-from tkinter import messagebox, filedialog
-import tkinter
+import common
 from os import path, replace, unlink
 
 def addpagenums(startpage, inipdffile):
@@ -14,6 +13,8 @@ def addpagenums(startpage, inipdffile):
         pdfReader = PdfFileReader(BytesIO(inipdffile))
         pdfWriter = PdfFileWriter()
         resfile= NamedTemporaryFile(mode="w+b",delete=False,suffix=".pdf", prefix="result")      
+
+        infoobj = common.infopopup(common.root)
 
         for i in range(0,pdfReader.numPages):
 
@@ -28,6 +29,8 @@ def addpagenums(startpage, inipdffile):
                     self.cell(w=0,txt=str(i+1), align='C')
                 #
             #
+
+            infoobj.show(str(i+1))
 
             if currentpage.mediaBox.getHeight()<currentpage.mediaBox.getWidth():
                 pdflass = myFPDF(orientation  = 'L')
@@ -54,18 +57,16 @@ def addpagenums(startpage, inipdffile):
             pdfWriter.write(resfile)
 
             pagefile.close()
-            unlink(pagefile.name) 
+            unlink(pagefile.name)
+            
         #
+        infoobj.close()
 
         resfile.close()
         
         if path.getsize(resfile.name) > 5000000:
-            root = tkinter.Tk()
-            root.attributes("-topmost", 1)
-            target = filedialog.askdirectory(title='Select Folder to Save')
-            root.destroy()
-            root.mainloop()
-
+            target = common.pointtodir(title='Select Folder to Save')
+ 
             replace(resfile.name,target + r'/result.pdf')
             resbytes = b'saved'
  
@@ -79,11 +80,9 @@ def addpagenums(startpage, inipdffile):
         return resbytes
         
     except Exception as e:
-        root = tkinter.Tk()
-        root.attributes("-topmost", 1)
-        messagebox.showerror(title="addpagenums",message=e) 
-        root.destroy()
-        root.mainloop()
+        common.errormsg(title=__name__,message=e)
+        return b'Error: ' + str(e).encode()
+    
 #
 
 
