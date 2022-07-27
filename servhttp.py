@@ -5,17 +5,17 @@ from sys import argv
 import random
 import ctypes
 from myfunc import myfunc
-from tkinter import messagebox
-import tkinter
+import common
 
 def main():
+
+    common.intiate()
  
     try:
         HOST = '127.0.0.1'
         iniPORT = 50000
         newPORT = random.randint(50000,60000)
         CODESTR = "mypypdftools"
-        #runningport = iniPORT
         isrepliyed = 0
 
         print(argv)
@@ -53,12 +53,14 @@ def main():
     #
 
     except Exception as e:
-        root = tkinter.Tk()
-        root.attributes("-topmost", 1)
-        messagebox.showerror(title="Main", message=e)
-        root.destroy()
-        root.mainloop()
+        common.errormsg(title="Main", message=e)
     #
+
+    finally:
+        common.root.destroy()
+    #
+
+    common.root.mainloop()
 #
 
 if __name__ == "__main__":
