@@ -107,6 +107,8 @@ ui.combinefromfolder = function(){ //request can be insert or update
 
     fdata.append("request","combinefromfolder");
 
+    document.getElementById("reorder_tb").innerHTML = ''
+
     xhr.open('POST',"http://localhost:"+ui.port,true)
 
     document.getElementById("loader").style.display='block'; //display loader
@@ -143,6 +145,8 @@ ui.combinefromfolder = function(){ //request can be insert or update
 ui.addpagenums = function(){ //request can be insert or update
     var xhr = new XMLHttpRequest();
     var fdata = new FormData();
+
+    document.getElementById("reorder_tb").innerHTML = ''
 
     startingpage = prompt("Which page will be the first?", "1")
 
@@ -190,6 +194,8 @@ ui.encodepdf = function(){
     var xhr = new XMLHttpRequest();
     var fdata = new FormData();
 
+    document.getElementById("reorder_tb").innerHTML = ''
+
     password = prompt("Insert password", "123456")
 
     if (password == null){
@@ -235,6 +241,8 @@ ui.mergepdfs = function(){
     var xhr = new XMLHttpRequest();
     var fdata = new FormData();
 
+    document.getElementById("reorder_tb").innerHTML = ''
+
     fdata.append("request","mergepdfs");
     
     for (let i=0; i<document.getElementById("upload_mergepdfs").files.length;i++){
@@ -278,6 +286,8 @@ ui.mergepdfs = function(){
 ui.splitpdf = function(){
     var xhr = new XMLHttpRequest();
     var fdata = new FormData();
+
+    document.getElementById("reorder_tb").innerHTML = ''
 
     fdata.append("request","splitpdf");
     
@@ -329,6 +339,8 @@ ui.reorder_showdoc = function(){
     var xhr = new XMLHttpRequest();
     var fdata = new FormData();
 
+    document.getElementById("reorder_tb").innerHTML = ''
+
     fdata.append("request","reorder_showdoc");
     
     fdata.append('uploadpdf',document.getElementById("upload_reorder").files[0]);
@@ -351,7 +363,7 @@ ui.reorder_showdoc = function(){
                 if((i+1)%4 == 1){
                     tbody+= "<tr>"
                 }
-                tbody+=`<td><label for="check_${i}"><img src="${resobj[i]}" width="150" height="150" id="img_${i}" data-img="${i}" style="transform: rotate(0deg); filter: blur(0px)"></label><input type="checkbox" name="pagechecks" id="check_${i}" data-check="${i}">`;
+                tbody+=`<td><label for="check_${i}" style="vertical-align:bottom"><img src="${resobj[i]}" width="150" height="150" id="img_${i}" data-img="${i}" style="transform: rotate(0deg); filter: blur(0px)"><small>${i+1}</small></label><input type="checkbox" name="pagechecks" id="check_${i}" data-check="${i}">`;
                 tbody+="</td>";
                 if((i+1)%4 == 0){
                     tbody+= "</tr>"
@@ -366,6 +378,11 @@ ui.reorder_showdoc = function(){
             document.getElementById("reorder_tb").innerHTML = tbody;
             document.getElementById('reorderbts').style.display = 'inline';
 
+            imgs = document.getElementsByTagName("img")
+            for (eachimg of imgs){
+                eachimg.addEventListener('dblclick', (e) => {console.log(e); window.open(e["target"].src,"_blank")})
+            }
+            
         }
         else if (this.readyState == 4 && this.status != 200){
             alert(this.responseText)
@@ -430,18 +447,25 @@ ui.movepage = function(){
         imgmap.set(parseInt(eachpage.previousSibling.firstChild.dataset.img),[eachpage.previousSibling.firstChild.src,eachpage.previousSibling.firstChild.style.transform,eachpage.previousSibling.firstChild.style.filter])
     }
 
+    var prevmove = 0;
+
     for (let eachpage of pagechecks){
         if(eachpage.checked == true){
-            movercheck = parseInt(eachpage.dataset.check) //mover's current place
+
+            movercheck = parseInt(eachpage.dataset.check) + prevmove //mover's current place
+
             moverimg = placesmap.get(movercheck)//movers id
+
             wheremove = Math.min(Math.max(movercheck + moverate,0),placesmap.size-1) //movement no less than to 0 and no more than to last page
-            
+
+           
             if (moverate < 0){
                 for (let i = movercheck - 1; i >= wheremove; i--){
                     let currentimg_in_place = placesmap.get(i)
                     placesmap.set(i+1,currentimg_in_place)
                 }
                 placesmap.set(wheremove,moverimg)
+                prevmove = prevmove + 1 
             }
             if (moverate > 0){
                 for (let i = movercheck + 1; i <= wheremove; i++){
@@ -449,7 +473,10 @@ ui.movepage = function(){
                     placesmap.set(i-1,currentimg_in_place)
                 }
                 placesmap.set(wheremove,moverimg)
-            }             
+                prevmove = prevmove -1 //accumulating. for example, if page 0,1 moved to the end, page 2 will now be 2-2 = 0
+            }
+            
+            eachpage.checked = false
         }
     }
 
@@ -460,7 +487,7 @@ ui.movepage = function(){
         if((j+1)%4 == 1){
             tbody+= "<tr>"
         }
-        tbody+=`<td><label for="check_${j}"><img src="${imgmap.get(placesmap.get(j))[0]}" width="150" height="150" id="img_${placesmap.get(j)}" data-img="${placesmap.get(j)}" style="transform: ${imgmap.get(placesmap.get(j))[1]}; filter: ${imgmap.get(placesmap.get(j))[2]};"></label><input type="checkbox" name="pagechecks" id="check_${j}" data-check="${j}">`;
+        tbody+=`<td><label for="check_${j}" style="vertical-align:bottom"><img src="${imgmap.get(placesmap.get(j))[0]}" width="150" height="150" id="img_${placesmap.get(j)}" data-img="${placesmap.get(j)}" style="transform: ${imgmap.get(placesmap.get(j))[1]}; filter: ${imgmap.get(placesmap.get(j))[2]};"><small>${placesmap.get(j)+1}</small></label><input type="checkbox" name="pagechecks" id="check_${j}" data-check="${j}">`;
         tbody+="</td>";
         if((j+1)%4 == 0){
             tbody+= "</tr>"
@@ -473,6 +500,11 @@ ui.movepage = function(){
 
     tbody+= "</tbody>"
     document.getElementById("reorder_tb").innerHTML = tbody;
+
+    imgs = document.getElementsByTagName("img")
+    for (eachimg of imgs){
+        eachimg.addEventListener('dblclick', (e) => {console.log(e); window.open(e["target"].src,"_blank")})
+    }
     
 }
 //********************************************************************************************** */
