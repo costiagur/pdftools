@@ -52,7 +52,21 @@
           <td><a href="#" onclick="document.getElementById('upload_pagenum').click()">Add page numbers to one pdf file</a></td>
         </tr>
         <tr>
-          <td><a href="#" onclick="document.getElementById('upload_encodepdf').click()">Encode one pdf file</a></td>
+          <td><a href="#" onclick="document.getElementById('upload_encodepdf').click()">Encrypt/Decrypt one pdf file</a></td>
+          <dialog id="askendecrypt">
+            <p>
+            <Label for="endecrypt_sel">Encrypt or Decrypt</label>
+            <select id="endecrypt_sel">
+              <option value="encrypt" selected>Encrypt</option>
+              <option value="decrypt">Decrypt</option>
+            </select>
+            </p>
+            <menu>
+              <button id="cancel_bt" onclick="ui.encodepdf('Cancel')">Cancel</button>
+              &nbsp;
+              <button id="ok_bt" onclick="ui.encodepdf('Ok')">Ok</button>
+            </menu>
+          </dialog>
         </tr>
         <tr>
           <td><a href="#" onclick="document.getElementById('upload_mergepdfs').click()">Merge uploaded pdf files</a></td>
@@ -84,7 +98,7 @@
   
 <div class="w3-container" hidden>
   <input type="file" id="upload_pagenum" onchange="ui.addpagenums()">
-  <input type="file" id="upload_encodepdf" onchange="ui.encodepdf()">
+  <input type="file" id="upload_encodepdf" onchange="document.getElementById('askendecrypt').showModal()">
   <input type="file" id="upload_mergepdfs" multiple onchange="ui.mergepdfs()">
   <input type="file" id="upload_splitpdf" onchange="ui.splitpdf()">
   <input type="file" id="upload_reorder" onchange="ui.reorder_showdoc()">

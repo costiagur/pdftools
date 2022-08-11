@@ -190,9 +190,15 @@ ui.addpagenums = function(){ //request can be insert or update
 }
 
 //********************************************************************************************* */
-ui.encodepdf = function(){
+ui.encodepdf = function(answer){
     var xhr = new XMLHttpRequest();
     var fdata = new FormData();
+
+    document.getElementById("askendecrypt").close()
+
+    if(answer=='Cancel'){
+        return
+    }
 
     document.getElementById("reorder_tb").innerHTML = ''
 
@@ -204,6 +210,7 @@ ui.encodepdf = function(){
 
     fdata.append("request","encodepdf");
     fdata.append("password",password);
+    fdata.append("endecrypt_sel",document.getElementById("endecrypt_sel").value);
     fdata.append("uploadpdf",document.getElementById("upload_encodepdf").files[0]);
 
     xhr.open('POST',"http://localhost:"+ui.port,true)

@@ -10,6 +10,8 @@ from reorder_commit import reorder_commit
 from downloadpoppler import downloadpoppler
 import common
 
+CODESTR = "mypypdftools"
+
 def myfunc(queryobj):   
 
     try:
@@ -35,7 +37,7 @@ def myfunc(queryobj):
 
         #
         elif postdict["request"] == "encodepdf":
-            file64enc = base64.b64encode(encodepdf(postdict["password"],filesdict["uploadpdf"][1]))
+            file64enc = base64.b64encode(encodepdf(postdict["password"],postdict["endecrypt_sel"],filesdict["uploadpdf"][1]))
             file64dec = file64enc.decode()
             replymsg = json.dumps(["result.pdf",file64dec]).encode('UTF-8')
 

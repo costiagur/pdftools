@@ -1,12 +1,11 @@
 from PyPDF2 import PdfFileReader, PdfFileWriter
 from io import BytesIO
 from os import unlink,path,replace
-import tkinter
-from tkinter import filedialog, messagebox
+import common
 from tempfile import NamedTemporaryFile
 
 
-def encodepdf(password, uploadpdfs):
+def encodepdf(password, endecrypt_sel, uploadpdfs):
 
     try:
 
@@ -16,11 +15,19 @@ def encodepdf(password, uploadpdfs):
         pdfReader = PdfFileReader(initialfile)
         pdfWriter = PdfFileWriter()
 
-        for i in range(0,pdfReader.numPages): 
-            pdfWriter.addPage(pdfReader.getPage(i))
+        if endecrypt_sel == 'encrypt':
+            for i in range(0,pdfReader.numPages): 
+                pdfWriter.addPage(pdfReader.getPage(i))
+            #
+            pdfWriter.encrypt(password)
+        
+        elif endecrypt_sel == 'decrypt' and pdfReader.is_encrypted:
+            pdfReader.decrypt(password)
+            
+            for i in range(0,pdfReader.numPages): 
+                pdfWriter.addPage(pdfReader.getPage(i))
+            #
         #
-
-        pdfWriter.encrypt(password)
 
         pdfWriter.write(resfile)
 
@@ -28,15 +35,9 @@ def encodepdf(password, uploadpdfs):
         resfile.close()
         
         if path.getsize(resfile.name) > 5000000:
-
-            root = tkinter.Tk()
-            root.attributes("-topmost", 1)
-            target = filedialog.askdirectory(title='Select Folder to Save')
+            target = common.pointtodir(title='Select Folder to Save')
             replace(resfile.name,target + r'/result.pdf')
             resbytes = b'saved'
-
-            root.destroy()
-            root.mainloop()
 
         else:
             res = open(resfile.name,"rb")
@@ -48,11 +49,8 @@ def encodepdf(password, uploadpdfs):
         return resbytes
 
     except Exception as e:
-        root = tkinter.Tk()
-        root.attributes("-topmost", 1)
-        messagebox.showerror(title="encodepdf",message=e)
-        root.destroy()
-        root.mainloop()
+        common.errormsg(title=__name__,message=e)
+        return b'Error: ' + str(e).encode()
     #
 
 #
