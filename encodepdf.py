@@ -14,19 +14,17 @@ def encodepdf(password, endecrypt_sel, uploadpdfs):
 
         pdfReader = PdfFileReader(initialfile)
         pdfWriter = PdfFileWriter()
-
-        if endecrypt_sel == 'encrypt':
-            for i in range(0,pdfReader.numPages): 
-                pdfWriter.addPage(pdfReader.getPage(i))
-            #
-            pdfWriter.encrypt(password)
         
-        elif endecrypt_sel == 'decrypt' and pdfReader.is_encrypted:
+        if endecrypt_sel == 'decrypt' and pdfReader.is_encrypted:
             pdfReader.decrypt(password)
-            
-            for i in range(0,pdfReader.numPages): 
-                pdfWriter.addPage(pdfReader.getPage(i))
-            #
+        #    
+        
+        for i in range(0,pdfReader.numPages): 
+            pdfWriter.addPage(pdfReader.getPage(i))
+        #
+        
+        if endecrypt_sel == 'encrypt':
+            pdfWriter.encrypt(password)
         #
 
         pdfWriter.write(resfile)
