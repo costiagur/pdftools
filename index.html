@@ -37,8 +37,7 @@
   </style>
 </head>
 
-
-  <body>
+<body>
     <div id="loader" class="loader" style="display: none;"></div> <!--circle displayed while working-->
     <h2 style="text-align: center;">PDF File Manipulation Tools</h2>
     <h5 style="text-align: center;">All the tools assume use of pdf files</h5>
@@ -55,16 +54,16 @@
           <td><a href="#" onclick="document.getElementById('upload_encodepdf').click()">Encrypt/Decrypt one pdf file</a></td>
           <dialog id="askendecrypt">
             <p>
-            <Label for="endecrypt_sel">Encrypt or Decrypt</label>
-            <select id="endecrypt_sel">
-              <option value="encrypt" selected>Encrypt</option>
-              <option value="decrypt">Decrypt</option>
-            </select>
+              <Label for="endecrypt_sel">Encrypt or Decrypt</label>
+              <select id="endecrypt_sel">
+                <option value="encrypt" selected>Encrypt</option>
+                <option value="decrypt">Decrypt</option>
+              </select>
             </p>
             <menu>
-              <button id="cancel_bt" onclick="ui.encodepdf('Cancel')">Cancel</button>
+              <button id="cancel_bt" class="w3-button" onclick="ui.encodepdf('Cancel')">Cancel</button>
               &nbsp;
-              <button id="ok_bt" onclick="ui.encodepdf('Ok')">Ok</button>
+              <button id="ok_bt" class="w3-button" onclick="ui.encodepdf('Ok')">Ok</button>
             </menu>
           </dialog>
         </tr>
@@ -73,6 +72,25 @@
         </tr>
         <tr>
           <td><a href="#" onclick="document.getElementById('upload_splitpdf').click()">Split one pdf file</a></td>
+        </tr>
+        <tr>
+          <td><a href="#" onclick="document.getElementById('watermark_diag').showModal()" >Watermark one pdf file</a></td>
+          <dialog id="watermark_diag">
+            <div class="w3-container w3-cell">
+                <Label for="upload_waterclean">Get orginal file to mark</label> &nbsp;
+                <input type="file" id="upload_waterclean">
+            </div>
+            <div class="w3-container w3-cell">
+              <Label for="upload_watermark">Get marked pdf file</label> &nbsp;
+              <input type="file" id="upload_watermark">
+            </div>
+
+            <menu>
+              <button id="cancel_bt" class="w3-btn" onclick="ui.watermark('Cancel')">Cancel</button>
+              &nbsp;
+              <button id="run_bt" class="w3-btn" onclick="ui.watermark('Run')">Run</button>
+            </menu>
+          </dialog>
         </tr>
         <tr>
           <td><a href="#" onclick="document.getElementById('upload_reorder').click()">Reorder one pdf file</a></td>
@@ -87,23 +105,23 @@
         </tr>
 
     </table>
-  </div>
+    </div>
 
   <div class="w3-container w3-cell">
     <table id="reorder_tb"></table>
   </div>
-</div>
+  </div>
  
-<br>  
+  <br>  
   
-<div class="w3-container" hidden>
-  <input type="file" id="upload_pagenum" onchange="ui.addpagenums()">
-  <input type="file" id="upload_encodepdf" onchange="document.getElementById('askendecrypt').showModal()">
-  <input type="file" id="upload_mergepdfs" multiple onchange="ui.mergepdfs()">
-  <input type="file" id="upload_splitpdf" onchange="ui.splitpdf()">
-  <input type="file" id="upload_reorder" onchange="ui.reorder_showdoc()">
-</div>  
+  <div class="w3-container" hidden>
+    <input type="file" id="upload_pagenum" onchange="ui.addpagenums()">
+    <input type="file" id="upload_encodepdf" onchange="document.getElementById('askendecrypt').showModal()">
+    <input type="file" id="upload_mergepdfs" multiple onchange="ui.mergepdfs()">
+    <input type="file" id="upload_splitpdf" onchange="ui.splitpdf()">
+    <input type="file" id="upload_reorder" onchange="ui.reorder_showdoc()">
 
+  </div>  
 
 </body>
 

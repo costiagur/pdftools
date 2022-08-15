@@ -8,6 +8,7 @@ from splitpdf import splitpdf
 from reorder_showdoc import reorder_showdoc
 from reorder_commit import reorder_commit
 from downloadpoppler import downloadpoppler
+from watermark import watermark
 import common
 
 CODESTR = "mypypdftools"
@@ -67,8 +68,14 @@ def myfunc(queryobj):
             file64enc = base64.b64encode(reorder_commit(filesdict["uploadpdf"][1],placesdict))
             file64dec = file64enc.decode()
             replymsg = json.dumps(["result.pdf",file64dec]).encode('UTF-8')
-        
         #
+
+        elif postdict["request"] == "watermark":
+            file64enc = base64.b64encode(watermark(filesdict))
+            file64dec = file64enc.decode()
+            replymsg = json.dumps(["result.pdf",file64dec]).encode('UTF-8')
+
+
         # reply message should be encoded to be sent back to browser ----------------------------------------------
         # encoding to base64 is used to send ansi hebrew data. it is decoded to become string and put into json.
         # json is encoded to be sent to browser.
