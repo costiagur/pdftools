@@ -1,48 +1,40 @@
 import http.server
+import common
 import post
 from sys import exit
-import common
+import myfunc
+
 
 class Handler(http.server.BaseHTTPRequestHandler):
 
-    def setcodeword(self, codestr):
-        self.CODESTR = codestr
-        self.REPLIYED = 0       
-    #
-
     def setnewport(self,newPORT,querystr):
         self.newPORT = newPORT
-        self.querystr = querystr
-    #
-
-    def customfunc(self,funcobj):
-        self.funcobj = funcobj
+        self.querystr = querystr       
     #
 
     def processing(self,queryobj):
-        
-        try:
+        try:        
             postlist = queryobj._POST()
+            print(postlist)
 
             if('request' in postlist.keys()):
                 if postlist['request'] == 'close':
                     exit()
                 #
-                elif postlist['request'] == self.CODESTR:
-                    Handler.REPLIYED = 1 #this class is never initiated. therefore using here self doesn't update the value of self.REPLIYED in the setcodeword() and isrepliyed(). instead using specifically the name of the class
+                elif postlist['request'] == myfunc.CODESTR:
+                    common.replyed = 1
 
                     returnstr = '{"port":' + str(self.newPORT) + ', "args":' + self.querystr + '}'
 
                     return returnstr.encode()
             #
 
-            return Handler.funcobj(queryobj)
-        
+            return myfunc.myfunc(queryobj)
+        #
         except Exception as e:
-            common.errormsg(title=__name__,message=e)
+            common.errormsg(title=__name__ + "_processing",message=e)
         #
     #
-    
 
     def set_headers(self):
         self.send_response(200) 
@@ -72,29 +64,26 @@ class Handler(http.server.BaseHTTPRequestHandler):
 
         return
     #
-
-    def isrepliyed(self): #replyes that we the codeword was recieved and answered (repliyed) and we can change the port to new one.
-        return self.REPLIYED 
-
-    #
 #
 
 class HttpServer(http.server.HTTPServer):
-    def __init__(self,address_tuple,useHandler,codestr,newPORT,funcobj,querystr):
+    def __init__(self,address_tuple,useHandler,newPORT,querystr):
         
         self.address_tuple = address_tuple
         self.useHandler = useHandler
 
         super().__init__(self.address_tuple,self.useHandler)
         
-        useHandler.setcodeword(useHandler,codestr)
         useHandler.setnewport(useHandler,newPORT,querystr)
-        useHandler.customfunc(useHandler,funcobj)
     #
 
     def run_once(self):      
-        self.handle_request()
-        return self.useHandler.isrepliyed(self.useHandler) #Handler class is never initiated. no __init__(). therefore, need to provide class to self. 
+        try:
+            self.handle_request()
+        #
+        except Exception as e:
+            common.errormsg(title=__name__ + "_HttpServer",message=e)
+        #
     #
     
     def close(self):

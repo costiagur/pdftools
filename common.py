@@ -1,4 +1,8 @@
 import tkinter
+from tkinter import messagebox
+from tkinter import filedialog
+
+replyed = 0
 
 def intiate():
     global root
@@ -9,24 +13,24 @@ def intiate():
 
 def errormsg(title,message):
     root.deiconify()
-    tkinter.messagebox.showerror(title=title, message=message)
+    messagebox.showerror(title=title, message=message)
     root.withdraw()
 #
 
 def infomsg(title,message):
     root.deiconify()
-    tkinter.messagebox.showinfo(title=title, message=message)
+    messagebox.showinfo(title=title, message=message)
     root.withdraw()
 #
 
-def pointtodir(title):
+def pointtodir(title): #in case of direct intaraction with folders
     root.deiconify()
-    res = tkinter.filedialog.askdirectory(title=title)
+    res = filedialog.askdirectory(title=title)
     root.withdraw()
     return res
 #
 
-class infopopup:
+class infopopup: #to show information whithout requiring users action
     def __init__(self,parent):
         self.top = tkinter.Toplevel(parent)
         self.top.attributes("-topmost", 1)
