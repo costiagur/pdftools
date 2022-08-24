@@ -4,21 +4,20 @@ import os
 from sys import argv
 import random
 import ctypes
-from myfunc import myfunc, CODESTR
 import common
+from platform import system
 
 def main():
 
     common.intiate()
- 
+
+    HOST = '127.0.0.1'
+    iniPORT = 50000
+    newPORT = random.randint(50000,60000)
+
+    print(argv)
+
     try:
-        HOST = '127.0.0.1'
-        iniPORT = 50000
-        newPORT = random.randint(50000,60000)
-        isrepliyed = 0
-
-        print(argv)
-
         if len(argv) == 1:
             querystr = 'null'
         else:
@@ -34,25 +33,26 @@ def main():
 
         currentfolder =  os.path.dirname(os.path.realpath(__file__))
 
-        ctypes.windll.user32.ShowWindow( ctypes.windll.kernel32.GetConsoleWindow(), 0)
+        if system() == 'Windows':
+            ctypes.windll.user32.ShowWindow(ctypes.windll.kernel32.GetConsoleWindow(), 0)
+        #
 
         htmlfilepath = "file://" + currentfolder + "/index.html"
 
         webbrowser.open(htmlfilepath) #open html file of the UI
 
-        serv = webserv.HttpServer((HOST,iniPORT),webserv.Handler,CODESTR,newPORT,myfunc,querystr)
+        serv = webserv.HttpServer((HOST,iniPORT),webserv.Handler,newPORT,querystr)
 
-        while isrepliyed == 0:
-            isrepliyed = serv.run_once()
+        while common.replyed == 0:
+            serv.run_once()
         #
 
         serv.close()
-        serv = webserv.HttpServer((HOST,newPORT),webserv.Handler,'',newPORT,myfunc,querystr)
+        serv = webserv.HttpServer((HOST,newPORT),webserv.Handler,newPORT,querystr)
         serv.run_continuously()
     #
-
     except Exception as e:
-        common.errormsg(title="Main", message=e)
+        common.errormsg(title=__name__,message=e)
     #
 
     finally:

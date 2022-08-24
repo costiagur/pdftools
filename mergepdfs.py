@@ -2,8 +2,7 @@ from PyPDF2 import PdfFileMerger
 from io import BytesIO
 from tempfile import NamedTemporaryFile
 from os import unlink,path,replace
-import tkinter
-from tkinter import filedialog, messagebox
+import common
 
 def mergepdfs(filesdict):
 
@@ -22,14 +21,10 @@ def mergepdfs(filesdict):
 
         if path.getsize(resfile.name) > 5000000:
 
-            root = tkinter.Tk()
-            root.attributes("-topmost", 1)
-            target = filedialog.askdirectory(title='Select Folder to Save')
+            target = common.pointtodir(title='Select Folder to Save')
             replace(resfile.name,target + r'/result.pdf')
             resbytes = b'saved'
 
-            root.destroy()
-            root.mainloop()
 
         else:
             res = open(resfile.name,"rb")
@@ -41,10 +36,7 @@ def mergepdfs(filesdict):
         return resbytes
 
     except Exception as e:
-        root = tkinter.Tk()
-        root.attributes("-topmost", 1)
-        messagebox.showerror(title="mergepdfs",message=e)
-        root.destroy()
-        root.mainloop()
+        common.errormsg(title=__name__,message=e)
+        return b'Error: ' + str(e).encode()
    #
 #
