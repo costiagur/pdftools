@@ -16,7 +16,10 @@ def reorder_showdoc(uploadfile): #images to display in JS
         
         currentfolder = os.path.dirname(os.path.realpath(__file__))
 
-        poppath = currentfolder + '\\poppler\\' + os.listdir(currentfolder +'\\poppler\\')[0] + "\\Library\\bin"
+        currentfolderlist = currentfolder.split("\\")
+        upfolder = "\\".join(currentfolderlist[0:len(currentfolderlist)-1])
+
+        poppath = upfolder + '\\poppler\\' + os.listdir(upfolder +'\\poppler\\')[0] + "\\Library\\bin"
 
         images = convert_from_bytes(uploadfile, dpi=200, output_folder= draftdir.name, poppler_path=poppath)
 
