@@ -248,6 +248,44 @@ ui.splitpdf = function(){
 
     xhr.send(fdata); 
 }
+//********************************************************************************************* */
+ui.splitbyn = function(){
+    var xhr = new XMLHttpRequest();
+    var fdata = new FormData();
+
+    fdata.append("request","splitbyn");
+    
+    fdata.append('uploadpdf',document.getElementById("upload_splitbyn").files[0]);
+   
+    splitn = prompt("How many pages to split by", "1")
+
+    if (splitn == null){
+        return
+    }
+
+    fdata.append('splitn',splitn);
+
+    xhr.open('POST',"http://localhost:"+ui.port,true)
+
+    xhr.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {   
+            console.log(this.responseText)
+            
+            //alert(this.responseText)
+
+            resobj = JSON.parse(this.responseText);
+
+            ui.download(resobj[0],resobj[1])
+        }
+        else if (this.readyState == 4 && this.status != 200){
+            alert(this.responseText)
+        }
+
+    }
+
+    xhr.send(fdata); 
+}
+
 //********************************************************************************************** */
 ui.reorder_showdoc = function(){
     var xhr = new XMLHttpRequest();
