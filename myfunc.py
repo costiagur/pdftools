@@ -9,6 +9,7 @@ from reorder_showdoc import reorder_showdoc
 from reorder_commit import reorder_commit
 from downloadpoppler import downloadpoppler
 from watermark import watermark
+from splitbyn import splitbyn
 import common
 
 CODESTR = "mypypdftools"
@@ -56,6 +57,12 @@ def myfunc(queryobj):
             file64dec = file64enc.decode()
             replymsg = json.dumps(["result.zip",file64dec]).encode('UTF-8')
 
+        #
+        elif postdict["request"] == "splitbyn":
+            file64enc = base64.b64encode(splitbyn(filesdict["uploadpdf"][1],postdict["splitn"]))
+            file64dec = file64enc.decode()
+            replymsg = json.dumps(["result.zip",file64dec]).encode('UTF-8')
+        
         #
         elif postdict["request"] == "reorder_showdoc":
             if downloadpoppler() == 1:
