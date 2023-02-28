@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html  lang="en">
   <head>
     <title>PDF Tools</title>
     <meta charset="utf-8">
@@ -33,15 +33,21 @@
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
       }
-
+      
+     h2, h5 {
+        text-align: center;
+      }
+      #reorderbts {
+        display: none;
+      }
   </style>
 </head>
 
 <body data-codeword="mypypdftools">
   
     <div id="loader" class="loader" style="display: none;"></div> <!--circle displayed while working-->
-    <h2 style="text-align: center;">PDF File Manipulation Tools</h2>
-    <h5 style="text-align: center;">All the tools assume use of pdf files</h5>
+    <h2>PDF File Manipulation Tools</h2>
+    <h5>All the tools assume use of pdf files</h5>
     <div class="w3-cell-row">
     <div class="w3-container w3-cell">
     <table>
@@ -75,6 +81,9 @@
           <td><a href="#" onclick="document.getElementById('upload_splitpdf').click()">Split one pdf file</a></td>
         </tr>
         <tr>
+          <td><a href="#" onclick="document.getElementById('upload_splitbyn').click()">Split pdf file each n pages</a></td>
+        </tr>
+        <tr>
           <td><a href="#" onclick="document.getElementById('watermark_diag').showModal()" >Watermark one pdf file</a></td>
           <dialog id="watermark_diag">
             <div class="w3-container w3-cell">
@@ -96,7 +105,7 @@
         <tr>
           <td><a href="#" onclick="document.getElementById('upload_reorder').click()">Reorder one pdf file</a></td>
         </tr>
-        <tr id='reorderbts' style="display: none;">
+        <tr id='reorderbts'>
           <td><a href="#" onclick="ui.selectall()">Select All</a></td>
           <td><a href="#" onclick="ui.rotatepage()">Rotate</a></td>
           <td><a href="#" onclick="ui.delpage()">Delete</a></td>
@@ -120,6 +129,7 @@
     <input type="file" id="upload_encodepdf" onchange="document.getElementById('askendecrypt').showModal()">
     <input type="file" id="upload_mergepdfs" multiple onchange="ui.mergepdfs()">
     <input type="file" id="upload_splitpdf" onchange="ui.splitpdf()">
+    <input type="file" id="upload_splitbyn" onchange="ui.splitbyn()">
     <input type="file" id="upload_reorder" onchange="ui.reorder_showdoc()">
 
   </div>  
