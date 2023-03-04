@@ -8,5 +8,4 @@ Tools to manipulate pdf files:
   6. Reorder pages in pdf file: delete pages, rotate, reorder 
   
   TODO:
-  2. merge two files page by page from each file
-  3. rename by regex
+  OCR
