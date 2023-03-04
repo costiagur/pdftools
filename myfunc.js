@@ -275,7 +275,14 @@ ui.splitbyn = function(){
 
             resobj = JSON.parse(this.responseText);
 
-            ui.download(resobj[0],resobj[1])
+            if (atob(resobj[1]) == 'saved'){
+                alert('saved to folder')
+                return
+            }
+            else{
+                ui.download(resobj[0],resobj[1])
+            }
+
         }
         else if (this.readyState == 4 && this.status != 200){
             alert(this.responseText)
@@ -284,6 +291,130 @@ ui.splitbyn = function(){
     }
 
     xhr.send(fdata); 
+}
+//********************************************************************************************* */
+ui.watermark = function(){
+    var xhr = new XMLHttpRequest();
+    var fdata = new FormData();
+
+    document.getElementById("watermark_diag").close()
+
+    document.getElementById("reorder_tb").innerHTML = ''
+    document.getElementById('reorderbts').style.display = 'none';
+
+    fdata.append("request","watermark");
+
+    fdata.append("upload_waterclean",document.getElementById("upload_waterclean").files[0]);
+    fdata.append("upload_watermark",document.getElementById("upload_watermark").files[0]);
+
+    xhr.open('POST',"http://localhost:"+ui.port,true)
+
+    document.getElementById("loader").style.display='block'; //display loader
+
+    xhr.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {   
+            console.log(this.responseText)
+
+            document.getElementById("loader").style.display='none'; //display loader
+            
+            //alert(this.responseText)
+
+            resobj = JSON.parse(this.responseText);
+
+            if (atob(resobj[1]) == 'saved'){
+                alert('saved to folder')
+                return
+            }
+            else{
+                ui.download(resobj[0],resobj[1])
+            }
+        }
+        else if (this.readyState == 4 && this.status != 200){
+            alert(this.responseText)
+        }
+
+    }
+
+    xhr.send(fdata); 
+}
+
+//********************************************************************************************* */
+ui.renamebyregex = function(testorrun){
+    var xhr = new XMLHttpRequest();
+    var fdata = new FormData();
+
+    document.getElementById('renamebyregex_diag').close()
+
+    document.getElementById("reorder_tb").innerHTML = ''
+    document.getElementById('reorderbts').style.display = 'none';
+
+    if(testorrun == "run"){
+
+        fdata.append("request","renamebyregex");
+    
+        if (document.getElementById("upload_renamebyregex").files.length == 0){
+            return;
+        }
+    
+        regexstr = prompt("Insert Regular Expression","")
+    
+        if(regexstr == ""){
+            return;
+        }
+        else{
+            fdata.append("regexstr",regexstr);
+        }
+    
+        for (let i=0; i<document.getElementById("upload_renamebyregex").files.length;i++){
+            
+            fdata.append(document.getElementById("upload_renamebyregex").files[i].name,document.getElementById("upload_renamebyregex").files[i]);
+        }
+    
+    }
+
+    else if(testorrun == "test"){
+        fdata.append("request","renameregtxt");
+
+        if (document.getElementById("upload_renamebyregex").files.length == 0){
+            return;
+        }
+        else{
+            fdata.append('test',document.getElementById("upload_renamebyregex").files[0]);
+        }
+ 
+    }
+
+    xhr.open('POST',"http://localhost:"+ui.port,true)
+
+    document.getElementById("loader").style.display='block'; //display loader
+
+    xhr.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {   
+            console.log(this.responseText)
+
+            document.getElementById("loader").style.display='none'; //display loader
+            
+            //alert(this.responseText)
+
+            resobj = JSON.parse(this.responseText);
+
+            if (atob(resobj[1]) == 'saved'){
+                alert('saved to folder')
+                return
+            }
+            else{
+                ui.download(resobj[0],resobj[1])
+            }
+            
+        }
+        else if (this.readyState == 4 && this.status != 200){
+            alert(this.responseText)
+        }
+
+    }
+
+    xhr.send(fdata); 
+
 }
 
 //********************************************************************************************** */
@@ -612,55 +743,6 @@ ui.selectall = function(){
 
 }
 
-//********************************************************************************************* */
-ui.watermark = function(answer){
-    var xhr = new XMLHttpRequest();
-    var fdata = new FormData();
-
-    document.getElementById("watermark_diag").close()
-
-    if(answer=='Cancel'){
-        return
-    }
-
-    document.getElementById("reorder_tb").innerHTML = ''
-    document.getElementById('reorderbts').style.display = 'none';
-
-    fdata.append("request","watermark");
-
-    fdata.append("upload_waterclean",document.getElementById("upload_waterclean").files[0]);
-    fdata.append("upload_watermark",document.getElementById("upload_watermark").files[0]);
-
-    xhr.open('POST',"http://localhost:"+ui.port,true)
-
-    document.getElementById("loader").style.display='block'; //display loader
-
-    xhr.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {   
-            console.log(this.responseText)
-
-            document.getElementById("loader").style.display='none'; //display loader
-            
-            //alert(this.responseText)
-
-            resobj = JSON.parse(this.responseText);
-
-            if (atob(resobj[1]) == 'saved'){
-                alert('saved to folder')
-                return
-            }
-            else{
-                ui.download(resobj[0],resobj[1])
-            }
-        }
-        else if (this.readyState == 4 && this.status != 200){
-            alert(this.responseText)
-        }
-
-    }
-
-    xhr.send(fdata); 
-}
 
 //********************************************************************************************* */
 ui.download = function(filename, filetext){

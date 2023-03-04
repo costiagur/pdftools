@@ -37,6 +37,7 @@
      h2, h5 {
         text-align: center;
       }
+
   </style>
 </head>
 
@@ -49,13 +50,13 @@
     <div class="w3-container w3-cell">
     <table>
         <tr>
-          <td><a href="#" onclick="ui.combinefromfolder()" >Merge pdf files in folder and subfolders</a></td>
+          <td onclick="ui.combinefromfolder()">Merge pdf files in a folder and subfolders</td>
         </tr>
         <tr>
-          <td><a href="#" onclick="document.getElementById('upload_pagenum').click()">Add page numbers to one pdf file</a></td>
+          <td onclick="document.getElementById('upload_pagenum').click()">Add page numbers to one pdf file</td>
         </tr>
         <tr>
-          <td><a href="#" onclick="document.getElementById('upload_encodepdf').click()">Encrypt/Decrypt one pdf file</a></td>
+          <td onclick="document.getElementById('upload_encodepdf').click()">Encrypt/Decrypt one pdf file</td>
           <dialog id="askendecrypt">
             <p>
               <Label for="endecrypt_sel">Encrypt or Decrypt</label>
@@ -72,16 +73,16 @@
           </dialog>
         </tr>
         <tr>
-          <td><a href="#" onclick="document.getElementById('upload_mergepdfs').click()">Merge uploaded pdf files</a></td>
+          <td onclick="document.getElementById('upload_mergepdfs').click()">Merge uploaded pdf files</td>
         </tr>
         <tr>
-          <td><a href="#" onclick="document.getElementById('upload_splitpdf').click()">Split one pdf file</a></td>
+          <td onclick="document.getElementById('upload_splitpdf').click()">Split one pdf file</td>
         </tr>
         <tr>
-          <td><a href="#" onclick="document.getElementById('upload_splitbyn').click()">Split pdf file each n pages</a></td>
+          <td onclick="document.getElementById('upload_splitbyn').click()">Split pdf file each n pages</td>
         </tr>
         <tr>
-          <td><a href="#" onclick="document.getElementById('watermark_diag').showModal()" >Watermark one pdf file</a></td>
+          <td onclick="document.getElementById('watermark_diag').showModal()" >Watermark one pdf file</td>
           <dialog id="watermark_diag">
             <div class="w3-container w3-cell">
                 <Label for="upload_waterclean">Get orginal file to mark</label> &nbsp;
@@ -93,22 +94,42 @@
             </div>
 
             <menu>
-              <button id="cancel_bt" class="w3-btn" onclick="ui.watermark('Cancel')">Cancel</button>
+              <button class="w3-btn" onclick="document.getElementById('watermark_diag').close()">Cancel</button>
               &nbsp;
-              <button id="run_bt" class="w3-btn" onclick="ui.watermark('Run')">Run</button>
+              <button class="w3-btn" onclick="ui.watermark()">Run</button>
             </menu>
           </dialog>
         </tr>
         <tr>
-          <td><a href="#" onclick="document.getElementById('upload_reorder').click()">Reorder one pdf file</a></td>
+          <td onclick="document.getElementById('renamebyregex_diag').showModal()">Rename pdf files by Regular Expression</td>
+          <dialog id="renamebyregex_diag">
+            <p>
+              Before running the function, you should test the text that is extracted from a pdf file, to be able to apply the proper regular expression
+              For this end choose TEST button. For running the renaming process choose RENAME button. 
+            </p>
+            <p>
+              <label for="upload_renamebyregex">Choose files to rename or test text extraction before renaming</label>
+              <input type="file" id="upload_renamebyregex" multiple>
+            </p>
+            <menue>
+              <button class="w3-btn" onclick="document.getElementById('renamebyregex_diag').close()">Cancel</button>
+              &nbsp;
+              <button class="w3-btn" onclick="ui.renamebyregex('test')">TEST</button>
+              &nbsp;
+              <button class="w3-btn" onclick="ui.renamebyregex('run')">RENAME</button>
+            </menue>
+          </dialog>
+        </tr>
+        <tr>
+          <td onclick="document.getElementById('upload_reorder').click()">Reorder one pdf file</td>
         </tr>
         <tr id='reorderbts' style="display: none;">
-          <td><a href="#" onclick="ui.selectall()">Select All</a></td>
-          <td><a href="#" onclick="ui.rotatepage()">Rotate</a></td>
-          <td><a href="#" onclick="ui.delpage()">Delete</a></td>
-          <td><a href="#" onclick="ui.movepage()">Move</a></td>
+          <td onclick="ui.selectall()">Select All</td>
+          <td onclick="ui.rotatepage()">Rotate</td>
+          <td onclick="ui.delpage()">Delete</td>
+          <td onclick="ui.movepage()">Move</td>
           <td><input type="number" id="move_in" value="0" size="4"></td>
-          <td><a href="#" onclick="ui.finalizereorder()">Do</a></td>
+          <td onclick="ui.finalizereorder()">Do</td>
         </tr>
 
     </table>

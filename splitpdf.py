@@ -1,18 +1,18 @@
 from PyPDF2 import PdfFileReader, PdfFileWriter
 from io import BytesIO
 from tempfile import NamedTemporaryFile
-from os import unlink
+from os import unlink,path,replace
 import zipfile
-import tkinter
-from tkinter import filedialog, messagebox
+import common
+
 
 def splitpdf(inipdffile,splitlist):
     
     try:
         pdfReader = PdfFileReader(BytesIO(inipdffile))
     
-        zipbite = BytesIO()
-        zipres = zipfile.ZipFile(zipbite, mode='a')
+        zipbite = NamedTemporaryFile(mode="w+b",delete=False)
+        zipres = zipfile.ZipFile(zipbite.name, mode='a')
 
         intsplitlist = []
 
@@ -77,33 +77,27 @@ def splitpdf(inipdffile,splitlist):
         #
 
         zipres.close()
-        
-
-        if zipbite.getbuffer().nbytes > 5000000:
-            root = tkinter.Tk()
-            root.attributes("-topmost", 1)
-            target = filedialog.askdirectory(title='Select Folder to Save')
-            with open(target + r'/result.zip','wb') as zf:
-                zf.write(zipbite.getbuffer())  
-            #  
-            res = b'saved'
-            root.destroy()
-            root.mainloop()
-        else:
-            zipbite.seek(0)
-            res = zipbite.read()
-        #
-
+        zipbite.seek(0)
         zipbite.close()
 
-        return res
+        if path.getsize(zipbite.name) > 5000000:
+
+            target = common.pointtodir(title='Select Folder to Save')
+            replace(zipbite.name,target + r'/result.zip')
+            resbytes = b'saved'
+
+
+        else:
+            res = open(zipbite.name,"rb")
+            resbytes = res.read()
+            res.close()
+            unlink(zipbite.name)
+        #        
+
+        return resbytes
 
     except Exception as e:
-       root = tkinter.Tk()
-       root.attributes("-topmost", 1)
-       messagebox.showerror(title="splitpdf",message=e)
-       root.destroy()
-       root.mainloop()
- 
+        common.errormsg(title=__name__,message=e)
+        return b'Error: ' + str(e).encode() 
     #
 #
