@@ -13,6 +13,8 @@ from splitbyn import splitbyn
 from renamebyregex import renamebyregex
 from renameregtxt import renameregtxt
 from downloadtika import downloadtika
+from onepage import onepage
+from do_ocr import do_ocr
 import common
 
 CODESTR = "mypypdftools"
@@ -100,6 +102,16 @@ def myfunc(queryobj):
                 file64dec = file64enc.decode()
                 replymsg = json.dumps(["result.txt",file64dec]).encode('UTF-8')
             #
+        #
+
+        elif postdict["request"] == "firstpage":
+            replymsg = json.dumps(onepage(filesdict["pdffile"][1])).encode('UTF-8')
+        #
+
+        elif postdict["request"] == "do_ocr":
+            file64enc = base64.b64encode(do_ocr(filesdict["pdffile"][1],postdict["onepage"],postdict["rollangle"],postdict["brightness"]))
+            file64dec = file64enc.decode()
+            replymsg = json.dumps(["result.txt",file64dec]).encode('UTF-8')
         #
 
         # reply message should be encoded to be sent back to browser ----------------------------------------------

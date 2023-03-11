@@ -742,7 +742,88 @@ ui.selectall = function(){
     }
 
 }
+//********************************************************************************************* */
+ui.ocrfile_upload = function(){
+    var xhr = new XMLHttpRequest();
+    var fdata = new FormData();
 
+    if(document.getElementById("ocrfile_upload").files.length == 0){
+        return
+    }
+    
+    fdata.append("request", "firstpage");
+    fdata.append("pdffile",document.getElementById("ocrfile_upload").files[0])
+
+    xhr.open('POST',"http://localhost:"+ui.port,true)
+
+    document.getElementById("loader").style.display='block'; //display loader
+
+    xhr.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {   
+            console.log(this.responseText)
+
+            document.getElementById("loader").style.display='none'; //hide loader
+
+            resobj = JSON.parse(this.responseText);
+
+            document.getElementById("onepage").innerHTML=`<img width='300' height='424' src=${resobj} id="firstpage" style="w3-border">`
+        }
+        else if (this.readyState == 4 && this.status != 200){
+            alert(this.responseText)
+        }
+
+    }
+
+    xhr.send(fdata);  
+}
+//********************************************************************************************* */
+ui.rollangle = function(){
+    document.getElementById("firstpage").style.transform = `rotate(${document.getElementById("rollangle").value}deg)`
+    document.getElementById("rollangle_val").innerHTML=document.getElementById("rollangle").value
+}
+//********************************************************************************************* */
+ui.brighten = function(){
+    document.getElementById("firstpage").style.filter = `brightness(${document.getElementById("brightness").value})`
+    document.getElementById("brightness_val").innerHTML=document.getElementById("brightness").value
+}
+//********************************************************************************************* */
+ui.doocr = function(onepage){
+    var xhr = new XMLHttpRequest();
+    var fdata = new FormData();
+
+    if(document.getElementById("ocrfile_upload").files.length == 0){
+        return
+    }
+    
+    fdata.append("request", "do_ocr");
+    fdata.append("pdffile",document.getElementById("ocrfile_upload").files[0])
+    fdata.append("onepage", onepage);
+    fdata.append("rollangle", document.getElementById("rollangle").value);
+    fdata.append("brightness", document.getElementById("brightness").value);
+
+    xhr.open('POST',"http://localhost:"+ui.port,true)
+
+    document.getElementById("loader").style.display='block'; //display loader
+
+    xhr.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {   
+            console.log(this.responseText)
+
+            document.getElementById("loader").style.display='none'; //hide loader
+
+            resobj = JSON.parse(this.responseText);
+
+            ui.download(resobj[0],resobj[1])
+
+        }
+        else if (this.readyState == 4 && this.status != 200){
+            alert(this.responseText)
+        }
+
+    }
+
+    xhr.send(fdata);  
+}
 
 //********************************************************************************************* */
 ui.download = function(filename, filetext){
