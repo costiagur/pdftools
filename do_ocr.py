@@ -45,7 +45,7 @@ def do_ocr (scanfile,onepage=True,rollangle="0", brightness="1.0", langset='heb'
 
         eachimg = ImageEnhance.Color(eachimg).enhance(0.0) #turn black and white for OCR
 
-        ocr_str = pytesseract.image_to_string(eachimg, lang='eng'+addlang, config='--psm 7')
+        ocr_str = pytesseract.image_to_string(eachimg, lang='eng'+addlang, config='--textord_tablefind_recognize_tables')
         
         print(ocr_str)
 
