@@ -1,9 +1,9 @@
-from PyPDF2 import PdfFileReader 
+#from PyPDF2 import PdfFileReader 
 from io import BytesIO
 import common
 #import tika
-from tika import parser
-from os import environ
+#from tika import parser
+#from os import environ
 import fitz
 
 def renameregtxt(filedata):
