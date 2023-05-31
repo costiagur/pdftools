@@ -4,8 +4,9 @@ from os import unlink,replace, path
 import common
 import re
 from zipfile import ZipFile
-from tika import parser
-from os import environ
+#from tika import parser
+#from os import environ
+import fitz
 
 
 def renamebyregex(filesdict,regexstr):
@@ -15,15 +16,23 @@ def renamebyregex(filesdict,regexstr):
         regcomp = re.compile(regexstr,re.MULTILINE)
         mainzipf = NamedTemporaryFile(mode="w+b",delete=False)
 
-        environ["TIKA_SERVER_JAR"] = "file://tikaserver/tika-server.jar"
+#        environ["TIKA_SERVER_JAR"] = "file://tikaserver/tika-server.jar"
 
         with ZipFile(mainzipf.name,'a') as myzip:
 
             for key in filesdict.keys():
             
-                reader = parser.from_buffer(BytesIO(filesdict[key][1]),xmlContent=True)     
+                #reader = parser.from_buffer(BytesIO(filesdict[key][1]),xmlContent=True)
 
-                relist = regcomp.findall(reader["content"])
+                doc = fitz.Document(stream=BytesIO(filesdict[key][1]))
+                text = ""
+                
+                for page in doc:
+                    text += page.get_text()
+                #
+
+                #relist = regcomp.findall(reader["content"])
+                relist = regcomp.findall(text)
                 
                 newname = ""
 
