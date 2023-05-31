@@ -12,7 +12,7 @@ from watermark import watermark
 from splitbyn import splitbyn
 from renamebyregex import renamebyregex
 from renameregtxt import renameregtxt
-from downloadtika import downloadtika
+#from downloadtika import downloadtika
 from onepage import onepage
 from do_ocr import do_ocr
 import common
@@ -89,7 +89,7 @@ def myfunc(queryobj):
         #
 
         elif postdict["request"] == "renamebyregex":
-            if downloadtika() == 1:
+            #if downloadtika() == 1:
                 file64enc = base64.b64encode(renamebyregex(filesdict,postdict["regexstr"]))
                 file64dec = file64enc.decode()
                 replymsg = json.dumps(["result.zip",file64dec]).encode('UTF-8')
@@ -97,7 +97,7 @@ def myfunc(queryobj):
         #
 
         elif postdict["request"] == "renameregtxt":
-            if downloadtika() == 1:
+            #if downloadtika() == 1:
                 file64enc = base64.b64encode(renameregtxt(filesdict["test"][1]))
                 file64dec = file64enc.decode()
                 replymsg = json.dumps(["result.txt",file64dec]).encode('UTF-8')
