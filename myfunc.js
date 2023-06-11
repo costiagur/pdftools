@@ -356,7 +356,7 @@ ui.renamebyregex = function(testorrun){
             return;
         }
     
-        regexstr = prompt("Insert Regular Expression","")
+        regexstr = document.getElementById("regexcode").value
     
         if(regexstr == ""){
             return;
