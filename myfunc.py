@@ -1,21 +1,22 @@
 import base64
 import json
-from combinefromfolder import combinefromfolder
+
+import common
 from addpagenums import addpagenums
+from combinefromfolder import combinefromfolder
+from do_ocr import do_ocr
+from downloadpoppler import downloadpoppler
+from downloadtika import downloadtika
 from encodepdf import encodepdf
 from mergepdfs import mergepdfs
-from splitpdf import splitpdf
-from reorder_showdoc import reorder_showdoc
-from reorder_commit import reorder_commit
-from downloadpoppler import downloadpoppler
-from watermark import watermark
-from splitbyn import splitbyn
+from onepage import onepage
 from renamebyregex import renamebyregex
 from renameregtxt import renameregtxt
-#from downloadtika import downloadtika
-from onepage import onepage
-from do_ocr import do_ocr
-import common
+from reorder_commit import reorder_commit
+from reorder_showdoc import reorder_showdoc
+from splitbyn import splitbyn
+from splitpdf import splitpdf
+from watermark import watermark
 
 CODESTR = "mypypdftools"
 
@@ -89,7 +90,7 @@ def myfunc(queryobj):
         #
 
         elif postdict["request"] == "renamebyregex":
-            #if downloadtika() == 1:
+            if downloadtika() == 1:
                 file64enc = base64.b64encode(renamebyregex(filesdict,postdict["regexstr"]))
                 file64dec = file64enc.decode()
                 replymsg = json.dumps(["result.zip",file64dec]).encode('UTF-8')
@@ -97,7 +98,7 @@ def myfunc(queryobj):
         #
 
         elif postdict["request"] == "renameregtxt":
-            #if downloadtika() == 1:
+            if downloadtika() == 1:
                 file64enc = base64.b64encode(renameregtxt(filesdict["test"][1]))
                 file64dec = file64enc.decode()
                 replymsg = json.dumps(["result.txt",file64dec]).encode('UTF-8')
@@ -122,8 +123,8 @@ def myfunc(queryobj):
     #
 
     except Exception as e:
-        common.errormsg(title=__name__,message=e)
-        return b'Error: ' + str(e).encode()
-        
+        #common.errormsg(title=__name__,message=e)
+        replymsg = json.dumps(["Error",__name__+" -" + str(e)]).encode('UTF-8')
+        return replymsg
     #
 #

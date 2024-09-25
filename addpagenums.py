@@ -1,9 +1,13 @@
+import json
+from io import BytesIO
+from os import path, replace, unlink
+from tempfile import NamedTemporaryFile
+
 from fpdf import FPDF
 from PyPDF2 import PdfFileReader, PdfFileWriter
-from io import BytesIO
-from tempfile import NamedTemporaryFile
+
 import common
-from os import path, replace, unlink
+
 
 def addpagenums(startpage, inipdffile):
  
@@ -80,9 +84,9 @@ def addpagenums(startpage, inipdffile):
         return resbytes
         
     except Exception as e:
-        common.errormsg(title=__name__,message=e)
-        return b'Error: ' + str(e).encode()
-    
+        #common.errormsg(title=__name__,message=e)
+        replymsg = json.dumps(["Error",__name__+" -" + str(e)]).encode('UTF-8')
+        return replymsg
 #
 
 

@@ -1,7 +1,75 @@
 
+myfunc = new Object();
 //*********************************************************************************** */
-ui.combinefromfolder = function(){ //request can be insert or update
-    var xhr = new XMLHttpRequest();
+myfunc.msg = function(title,msg_txt){
+    document.getElementById("msg_title").innerHTML = title
+    document.getElementById("msg_txt").innerHTML = msg_txt
+    document.getElementById("msg_dg").showModal()
+}
+//********************************************************************************************* */
+myfunc.response = function(inid,intxt){
+    document.getElementById(inid + "_res").innerHTML = intxt
+    document.getElementById("response_dg").showModal()
+}
+//********************************************************************************************* */
+myfunc.resp_close = function(){
+    document.getElementById("response_dg").close();
+    
+    resnames = document.getElementsByName("inres")
+    
+    for (resnm of resnames){
+        resnm.innerHTML = ""
+    }
+}
+//********************************************************************************************* */
+myfunc.download = function(filename, filetext){
+
+    var a = document.createElement("a");
+
+    document.body.appendChild(a);
+
+    a.style = "display: none";
+
+    a.href = 'data:application/octet-stream;base64,' + filetext;
+
+    a.download = filename;
+
+    a.click();
+
+    document.body.removeChild(a);
+
+}
+//********************************************************************************************* */
+myfunc.sendrequest = function(fdata){
+    return new Promise((resolve) =>{
+        var xhr = new XMLHttpRequest();
+    
+        document.getElementById("loader").style.display='block'; //display loader
+    
+        xhr.open('POST',"http://localhost:"+ui.port,true)
+    
+        xhr.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                console.log(this.responseText)
+                document.getElementById("loader").style.display='none'; //display loader
+
+                resobj = JSON.parse(this.responseText);
+                resolve(resobj)
+
+            }
+            else if (this.readyState == 4 && this.status != 200){
+                document.getElementById("loader").style.display='none'; //display loader
+                resolve(["Error",this.responseText])
+
+            }
+        }
+    
+        xhr.send(fdata);
+    })
+}
+
+//*********************************************************************************** */
+myfunc.combinefromfolder = async function(){ //request can be insert or update
     var fdata = new FormData();
 
     fdata.append("request","combinefromfolder");
@@ -9,46 +77,27 @@ ui.combinefromfolder = function(){ //request can be insert or update
     document.getElementById("reorder_tb").innerHTML = ''
     document.getElementById('reorderbts').style.display = 'none';
 
-    xhr.open('POST',"http://localhost:"+ui.port,true)
-
-    document.getElementById("loader").style.display='block'; //display loader
-
-    xhr.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {   
-
-            document.getElementById("loader").style.display='none'; //display loader
-
-            //console.log(this.responseText)
-            
-            //alert(this.responseText)
-
-            resobj = JSON.parse(this.responseText);
-
-            if (atob(resobj[1]) == 'saved'){
-                alert('saved to folder')
-                return
-            }
-            else{
-                ui.download(resobj[0],resobj[1])
-            }
-        }
-        else if (this.readyState == 4 && this.status != 200){
-            alert(this.responseText)
-        }
-
+    const resobj = await myfunc.sendrequest(fdata)
+    if (resobj[0] == "Error"){
+        myfunc.msg(resobj[0], resobj[1])
     }
-
-    xhr.send(fdata);     
+    else{
+        if (atob(resobj[1]) == 'saved'){
+            myfunc.msg('Info','saved to folder')
+            return
+        }
+        else{
+            myfunc.download(resobj[0],resobj[1])
+        }
+    }
 }
 
 //*********************************************************************************** */
-ui.addpagenums = function(){ //request can be insert or update
-    var xhr = new XMLHttpRequest();
+myfunc.addpagenums = async function(){ //request can be insert or update
     var fdata = new FormData();
 
     document.getElementById("reorder_tb").innerHTML = ''
     document.getElementById('reorderbts').style.display = 'none';
-
 
     startingpage = prompt("Which page will be the first?", "1")
 
@@ -60,40 +109,23 @@ ui.addpagenums = function(){ //request can be insert or update
     fdata.append("startingpage",startingpage);
     fdata.append("uploadpdfs",document.getElementById("upload_pagenum").files[0]);
 
-    xhr.open('POST',"http://localhost:"+ui.port,true)
-
-    document.getElementById("loader").style.display='block'; //display loader
-
-    xhr.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {   
-            console.log(this.responseText)
-
-            document.getElementById("loader").style.display='none'; //display loader
-            
-            //alert(this.responseText)
-
-            resobj = JSON.parse(this.responseText);
-
-            if (atob(resobj[1]) == 'saved'){
-                alert('saved to folder')
-                return
-            }
-            else{
-                ui.download(resobj[0],resobj[1])
-            }
-        }
-        else if (this.readyState == 4 && this.status != 200){
-            alert(this.responseText)
-        }
-
+    const resobj = await myfunc.sendrequest(fdata)
+    if ( resobj[0] == "Error"){
+        myfunc.msg( resobj[0], resobj[1])
     }
-
-    xhr.send(fdata);     
+    else{
+        if (atob(resobj[1]) == 'saved'){
+            myfunc.msg('Info','saved to folder')
+            return
+        }
+        else{
+            myfunc.download(resobj[0],resobj[1])
+        }
+    }
 }
 
 //********************************************************************************************* */
-ui.encodepdf = function(answer){
-    var xhr = new XMLHttpRequest();
+myfunc.encodepdf = async function(answer){
     var fdata = new FormData();
 
     document.getElementById("askendecrypt").close()
@@ -117,44 +149,26 @@ ui.encodepdf = function(answer){
     fdata.append("endecrypt_sel",document.getElementById("endecrypt_sel").value);
     fdata.append("uploadpdf",document.getElementById("upload_encodepdf").files[0]);
 
-    xhr.open('POST',"http://localhost:"+ui.port,true)
-
-    document.getElementById("loader").style.display='block'; //display loader
-
-    xhr.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {   
-            console.log(this.responseText)
-
-            document.getElementById("loader").style.display='none'; //display loader
-            
-            //alert(this.responseText)
-
-            resobj = JSON.parse(this.responseText);
-
-            if (atob(resobj[1]) == 'saved'){
-                alert('saved to folder')
-                return
-            }
-            else{
-                ui.download(resobj[0],resobj[1])
-            }
-        }
-        else if (this.readyState == 4 && this.status != 200){
-            alert(this.responseText)
-        }
-
+    const resobj = await myfunc.sendrequest(fdata)
+    if ( resobj[0] == "Error"){
+        myfunc.msg( resobj[0], resobj[1])
     }
-
-    xhr.send(fdata); 
+    else{
+        if (atob(resobj[1]) == 'saved'){
+            myfunc.msg('Info','saved to folder')
+            return
+        }
+        else{
+            myfunc.download(resobj[0],resobj[1])
+        }
+    }
 }
 //********************************************************************************************* */
-ui.mergepdfs = function(){
-    var xhr = new XMLHttpRequest();
+myfunc.mergepdfs = async function(){
     var fdata = new FormData();
 
     document.getElementById("reorder_tb").innerHTML = ''
     document.getElementById('reorderbts').style.display = 'none';
-
 
     fdata.append("request","mergepdfs");
     
@@ -163,41 +177,22 @@ ui.mergepdfs = function(){
         fdata.append(`uploadpdfs_${i}`,document.getElementById("upload_mergepdfs").files[i]);
     }
 
-    xhr.open('POST',"http://localhost:"+ui.port,true)
-
-    document.getElementById("loader").style.display='block'; //display loader
-
-    xhr.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {   
-            console.log(this.responseText)
-
-            document.getElementById("loader").style.display='none'; //display loader
-            
-            //alert(this.responseText)
-
-            resobj = JSON.parse(this.responseText);
-
-            if (atob(resobj[1]) == 'saved'){
-                alert('saved to folder')
-                return
-            }
-            else{
-                ui.download(resobj[0],resobj[1])
-            }
-            
-        }
-        else if (this.readyState == 4 && this.status != 200){
-            alert(this.responseText)
-        }
-
+    const resobj = await myfunc.sendrequest(fdata)
+    if ( resobj[0] == "Error"){
+        myfunc.msg( resobj[0], resobj[1])
     }
-
-    xhr.send(fdata); 
-
+    else{
+        if (atob(resobj[1]) == 'saved'){
+            myfunc.msg('Info','saved to folder')
+            return
+        }
+        else{
+            myfunc.download(resobj[0],resobj[1])
+        }
+    }
 }
 //********************************************************************************************* */
-ui.splitpdf = function(){
-    var xhr = new XMLHttpRequest();
+myfunc.splitpdf = async function(){
     var fdata = new FormData();
 
     document.getElementById("reorder_tb").innerHTML = ''
@@ -206,7 +201,7 @@ ui.splitpdf = function(){
     fdata.append("request","splitpdf");
     
     fdata.append('uploadpdf',document.getElementById("upload_splitpdf").files[0]);
-   
+
     splitafterstr = prompt("State pages to split after them. Comma delimited.", "1,2,3")
 
     if (splitafterstr == null){
@@ -217,46 +212,29 @@ ui.splitpdf = function(){
 
     fdata.append('splitlist',JSON.stringify(splitafter));
 
-    xhr.open('POST',"http://localhost:"+ui.port,true)
-
-    document.getElementById("loader").style.display='block'; //display loader
-
-    xhr.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {   
-
-            console.log(this.responseText)
-
-            document.getElementById("loader").style.display='none'; //display loader
-
-            //alert(this.responseText)
-
-            resobj = JSON.parse(this.responseText);
-
-            if (atob(resobj[1]) == 'saved'){
-                alert('saved to folder')
-                return
-            }
-            else{
-                ui.download(resobj[0],resobj[1])
-            }
-        }
-        else if (this.readyState == 4 && this.status != 200){
-            alert(this.responseText)
-        }
-
+    const resobj = await myfunc.sendrequest(fdata)
+    if ( resobj[0] == "Error"){
+        myfunc.msg( resobj[0], resobj[1])
     }
-
-    xhr.send(fdata); 
+    else{
+        if (atob(resobj[1]) == 'saved'){
+            myfunc.msg('Info','saved to folder')
+            return
+        }
+        else{
+            myfunc.download(resobj[0],resobj[1])
+        }
+    }
 }
 //********************************************************************************************* */
-ui.splitbyn = function(){
+myfunc.splitbyn = async function(){
     var xhr = new XMLHttpRequest();
     var fdata = new FormData();
 
     fdata.append("request","splitbyn");
     
     fdata.append('uploadpdf',document.getElementById("upload_splitbyn").files[0]);
-   
+
     splitn = prompt("How many pages to split by", "1")
 
     if (splitn == null){
@@ -265,36 +243,23 @@ ui.splitbyn = function(){
 
     fdata.append('splitn',splitn);
 
-    xhr.open('POST',"http://localhost:"+ui.port,true)
-
-    xhr.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {   
-            console.log(this.responseText)
-            
-            //alert(this.responseText)
-
-            resobj = JSON.parse(this.responseText);
-
-            if (atob(resobj[1]) == 'saved'){
-                alert('saved to folder')
-                return
-            }
-            else{
-                ui.download(resobj[0],resobj[1])
-            }
-
+    const resobj = await myfunc.sendrequest(fdata)
+    if ( resobj[0] == "Error"){
+        myfunc.msg(resobj[0], resobj[1])
+    }
+    else{
+        if (atob(resobj[1]) == 'saved'){
+            myfunc.msg('Info','saved to folder')
+            return
         }
-        else if (this.readyState == 4 && this.status != 200){
-            alert(this.responseText)
+        else{
+            myfunc.download(resobj[0],resobj[1])
         }
 
     }
-
-    xhr.send(fdata); 
 }
 //********************************************************************************************* */
-ui.watermark = function(){
-    var xhr = new XMLHttpRequest();
+myfunc.watermark = async function(){
     var fdata = new FormData();
 
     document.getElementById("watermark_diag").close()
@@ -307,40 +272,23 @@ ui.watermark = function(){
     fdata.append("upload_waterclean",document.getElementById("upload_waterclean").files[0]);
     fdata.append("upload_watermark",document.getElementById("upload_watermark").files[0]);
 
-    xhr.open('POST',"http://localhost:"+ui.port,true)
-
-    document.getElementById("loader").style.display='block'; //display loader
-
-    xhr.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {   
-            console.log(this.responseText)
-
-            document.getElementById("loader").style.display='none'; //display loader
-            
-            //alert(this.responseText)
-
-            resobj = JSON.parse(this.responseText);
-
-            if (atob(resobj[1]) == 'saved'){
-                alert('saved to folder')
-                return
-            }
-            else{
-                ui.download(resobj[0],resobj[1])
-            }
-        }
-        else if (this.readyState == 4 && this.status != 200){
-            alert(this.responseText)
-        }
-
+    const resobj = await myfunc.sendrequest(fdata)
+    if ( resobj[0] == "Error"){
+        myfunc.msg( resobj[0], resobj[1])
     }
-
-    xhr.send(fdata); 
+    else{
+        if (atob(resobj[1]) == 'saved'){
+            myfunc.msg('Info','saved to folder')
+            return
+        }
+        else{
+            myfunc.download(resobj[0],resobj[1])
+        }
+    }
 }
 
 //********************************************************************************************* */
-ui.renamebyregex = function(testorrun){
-    var xhr = new XMLHttpRequest();
+myfunc.renamebyregex = async function(testorrun){
     var fdata = new FormData();
 
     document.getElementById('renamebyregex_diag').close()
@@ -356,7 +304,7 @@ ui.renamebyregex = function(testorrun){
             return;
         }
     
-        regexstr = document.getElementById("regexcode").value
+        regexstr = prompt("Insert Regular Expression","")
     
         if(regexstr == ""){
             return;
@@ -381,316 +329,207 @@ ui.renamebyregex = function(testorrun){
         else{
             fdata.append('test',document.getElementById("upload_renamebyregex").files[0]);
         }
- 
     }
 
-    xhr.open('POST',"http://localhost:"+ui.port,true)
-
-    document.getElementById("loader").style.display='block'; //display loader
-
-    xhr.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {   
-            console.log(this.responseText)
-
-            document.getElementById("loader").style.display='none'; //display loader
-            
-            //alert(this.responseText)
-
-            resobj = JSON.parse(this.responseText);
-
-            if (atob(resobj[1]) == 'saved'){
-                alert('saved to folder')
-                return
-            }
-            else{
-                ui.download(resobj[0],resobj[1])
-            }
-            
-        }
-        else if (this.readyState == 4 && this.status != 200){
-            alert(this.responseText)
-        }
-
+    const resobj = await myfunc.sendrequest(fdata)
+    if ( resobj[0] == "Error"){
+        myfunc.msg( resobj[0], resobj[1])
     }
-
-    xhr.send(fdata); 
-
+    else{
+        if (atob(resobj[1]) == 'saved'){
+            myfunc.msg('Info','saved to folder')
+            return
+        }
+        else{
+            myfunc.download(resobj[0],resobj[1])
+        }
+    }
 }
 
 //********************************************************************************************** */
-ui.reorder_showdoc = function(){
-    var xhr = new XMLHttpRequest();
+myfunc.reorder_showdoc = async function(){
     var fdata = new FormData();
-
-    document.getElementById("reorder_tb").innerHTML = ''
-
-    window.addEventListener("keydown", (event) => {
-        if (event.code == "Delete"){
-            ui.delpage()
-        }
-        else if(event.code == "ArrowRight" || event.code == "ArrowLeft"){
-            ui.moveonepage(event.code)
-        }
-    },true)
-
+    
     fdata.append("request","reorder_showdoc");
     
     fdata.append('uploadpdf',document.getElementById("upload_reorder").files[0]);
 
-    xhr.open('POST',"http://localhost:"+ui.port,true)
+    document.getElementById("reorder_tb").innerHTML = ''
 
-    document.getElementById("loader").style.display='block'; //display loader
+    const resobj = await myfunc.sendrequest(fdata)
+    //console.log(resobj)
+    
+    if (resobj[0] == "Error"){
+        myfunc.msg(resobj[0], resobj[1])
+    }
+    else{
+        let tbody = "<tbody>"
 
-    xhr.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {   
-            //console.log(this.responseText)
-
-            document.getElementById("loader").style.display='none'; //display loader
-
-            resobj = JSON.parse(this.responseText);
-            
-            let tbody = "<tbody>"
-
-            for(var i=0; i<resobj.length; i++){
+        for(var i=0; i<resobj.length; i++){
                 if((i+1)%4 == 1){
                     tbody+= "<tr>"
                 }
-                tbody+=`<td><label for="check_${i}" style="vertical-align:bottom"><img src="${resobj[i]}" width="150" height="150" id="img_${i}" data-img="${i}" style="transform: rotate(0deg); filter: blur(0px)"><small>${i+1}</small></label><input type="checkbox" name="pagechecks" id="check_${i}" data-check="${i}">`;
+                tbody+=`<td data-ind="${i}" data-img="${i}"><img draggable="true" src="${resobj[i]}" width="150" height="150" id="img_${i}" data-img="${i}" style="transform: rotate(0deg); filter: blur(0px)"><small>${i+1}</small>`;
                 tbody+="</td>";
                 if((i+1)%4 == 0){
                     tbody+= "</tr>"
                 }
-            }
-
-            if((i)%4 != 0){ //in case the loop ended on remainder 1-3
-                tbody+= "</tr>"
-            }
-
-            tbody+= "</tbody>"
-            document.getElementById("reorder_tb").innerHTML = tbody;
-            document.getElementById('reorderbts').style.display = 'inline';
-
-            imgs = document.getElementsByTagName("img")
-            for (eachimg of imgs){
-                eachimg.addEventListener('dblclick', (e) => {console.log(e); window.open(e["target"].src,"_blank")})
-            }
-            
         }
-        else if (this.readyState == 4 && this.status != 200){
-            alert(this.responseText)
+
+        if((i)%4 != 0){ //in case the loop ended on remainder 1-3
+            tbody+= "</tr>"
         }
+
+        tbody+= "</tbody>"
+        document.getElementById("reorder_tb").innerHTML = tbody;
+        document.getElementById('reorderbts').style.display = 'inline';
+
+        myfunc.addlisteners()
+    }
+}
+//******************************************************************************************* */
+myfunc.addlisteners = function(){
+    var eachtd = ''
+    var imgmap = new Object();
+    var fromind = 0;
+    var toind = 0;
+    var imgs = document.getElementsByTagName("img")
+    var tds = document.getElementById("reorder_tb").getElementsByTagName("TD")
+
+    for (eachtd of tds){
+        imgmap[eachtd.firstChild.dataset.img] = [eachtd.firstChild.src,eachtd.firstChild.style.transform,eachtd.firstChild.style.filter];
     }
 
-    xhr.send(fdata);
+    window.addEventListener("keydown", (event) => {
+        if (event.code == "Delete"){
+            myfunc.delpage()
+        }
+        else if(event.code == "ArrowRight" || event.code == "ArrowLeft"){
+
+            for (eachtd of tds){
+                if (eachtd.classList.contains("checked") == true){
+                    fromind = parseInt(eachtd.dataset.ind)
+                    myfunc.moveonepage(imgmap,fromind,(event.code == "ArrowRight")?fromind+1:fromind-1)
+                }
+            }
+        }
+    },true)
+
+    for (eachimg of imgs){
+        eachimg.addEventListener('dblclick', (e) => {window.open(e["target"].src,"_blank")})
+        eachimg.addEventListener('click',(e) =>{if (e["target"].parentNode.tagName == "TD"){
+            e["target"].parentNode.classList.toggle("checked")}
+        })
+        eachimg.addEventListener('dragover', (e)=> {e.preventDefault();});
+        eachimg.addEventListener('dragstart', (e) => {
+            if (e["target"].parentNode.tagName == "TD"){
+                e["target"].parentNode.classList.toggle("checked")
+                fromind = parseInt(e["target"].parentNode.dataset.ind);  // Store the ID of the dragged image
+        }})
+        eachimg.addEventListener('drop', (e)=> {
+            e.preventDefault();
+            toind = parseInt(e["target"].parentNode.dataset.ind)
+            myfunc.moveonepage(imgmap,fromind,toind)
+        });
+    }
+}
+
+//******************************************************************************************* */
+myfunc.moveonepage = function(imgmap,fromind, toind){
+
+    var tds = document.getElementById("reorder_tb").getElementsByTagName("TD");
+
+    var tdmap = new Object();
+    var j = 0;
+
+    for (let eachtd of tds){
+        tdmap[parseInt(eachtd.dataset.ind)] = eachtd.dataset.img;
+    }
+
+    var moving = tdmap[fromind] 
+
+    for(j=fromind;j < tds.length-1;j++){
+            tdmap[j] = tdmap[j+1]
+    }
+
+    for(j=tds.length;j > toind;j--){
+        tdmap[j] = tdmap[j-1]
+    }
+
+    tdmap[toind] = moving
+        
+    tds[toind].classList.remove("checked")
+    
+    var tbody = "<tbody>"
+
+    for(j=0; j<tds.length; j++){
+
+        if((j+1)%4 == 1){
+            tbody+= "<tr>"
+        }
+        
+        tbody+=`<td data-ind="${j}" data-img = "${tdmap[j]}"><img draggable="true" src="${imgmap[tdmap[j]][0]}" width="150" height="150" id="img_${tdmap[j]}" data-img="${tdmap[j]}" style="transform: ${imgmap[tdmap[j]][1]}; filter: ${imgmap[tdmap[j]][2]};"><small>${parseInt(tdmap[j])+1}</small>`;
+        
+        tbody+="</td>";
+        if((j+1)%4 == 0){
+            tbody+= "</tr>"
+        }
+    }
+    
+    if((j)%4 != 0){ //in case the loop ended on remainder 1-3
+            tbody+= "</tr>"
+    }
+
+    tbody+= "</tbody>"
+    document.getElementById("reorder_tb").innerHTML = tbody;
+
+    myfunc.addlisteners()
 }
 //********************************************************************************************* */
-ui.rotatepage = function(){
-    var pagechecks = document.getElementsByName("pagechecks");
+myfunc.rotatepage = function(){
+    var pagechecks = document.getElementsByClassName("checked");
     var eachpage=''
     var rotatestage = ''
     const regex = /[0-9]/g;
     var newrotate = 0
 
     for (eachpage of pagechecks){
-        if(eachpage.checked == true){
-            rotatestage = eachpage.previousSibling.firstChild.style.transform
+            rotatestage = eachpage.firstChild.style.transform
             rotateint = parseInt(rotatestage.match(regex).join(''))
             newrotate = (rotateint/90 +1)*90 % 360
-            eachpage.previousSibling.firstChild.style.transform = `rotate(${newrotate}deg)` 
-        }
+            eachpage.firstChild.style.transform = `rotate(${newrotate}deg)` 
     }
 }
 //********************************************************************************************* */
-ui.delpage = function(){
-    var pagechecks = document.getElementsByName("pagechecks");
+myfunc.delpage = function(){
+    var pagechecks = document.getElementsByClassName("checked");
     var eachpage=''
     var deletestage = '0px'
 
     for (eachpage of pagechecks){
-        if(eachpage.checked == true){
-            deletestage = eachpage.previousSibling.firstChild.style.filter
+            deletestage = eachpage.firstChild.style.filter
             if (deletestage == 'blur(0px)'){
-                eachpage.previousSibling.firstChild.style.filter= 'blur(5px)';
+                eachpage.firstChild.style.filter= 'blur(5px)';
             }
             else{
-                eachpage.previousSibling.firstChild.style.filter= 'blur(0px)';
+                eachpage.firstChild.style.filter= 'blur(0px)';
             }
-            eachpage.checked = false
-        }
+            eachpage.classList.toggle("checked")
     }
 }
-//********************************************************************************************* */
-ui.movepage = function(){
-    var moverate = parseInt(document.getElementById('move_in').value);   
-    if (moverate == 0){
-        return;
-    }
-
-    var pagechecks = document.getElementsByName("pagechecks");
-
-    var movercheck=0;
-    var moverimg = 0;
-    var placesmap = new Object();
-    var imgmap = new Object();
-    var wheremove = 0;
-    var j = 0;
-
-    for (let eachpage of pagechecks){
-        placesmap[parseInt(eachpage.dataset.check)] = parseInt(eachpage.previousSibling.firstChild.dataset.img);
-        imgmap[parseInt(eachpage.previousSibling.firstChild.dataset.img)] = [eachpage.previousSibling.firstChild.src,eachpage.previousSibling.firstChild.style.transform,eachpage.previousSibling.firstChild.style.filter];
-    }
-
-    var prevmove = 0;
-
-    for (let eachpage of pagechecks){
-        if(eachpage.checked == true){
-
-            movercheck = parseInt(eachpage.dataset.check) + prevmove //mover's current place
-
-            moverimg = placesmap[movercheck]//movers id
-
-            wheremove = Math.min(Math.max(movercheck + moverate,0),Object.keys(placesmap).length-1) //movement no less than to 0 and no more than to last page
-
-           
-            if (moverate < 0){
-                for (let i = movercheck - 1; i >= wheremove; i--){
-                    let currentimg_in_place = placesmap[i]
-                    placesmap[i+1] = currentimg_in_place
-                }
-                placesmap[wheremove] = moverimg
-                prevmove = prevmove + 1 
-            }
-            if (moverate > 0){
-                for (let i = movercheck + 1; i <= wheremove; i++){
-                    let currentimg_in_place = placesmap[i]
-                    placesmap[i-1] = currentimg_in_place
-                }
-                placesmap[wheremove] = moverimg
-                prevmove = prevmove -1 //accumulating. for example, if page 0,1 moved to the end, page 2 will now be 2-2 = 0
-            }
-            
-            eachpage.checked = false
-        }
-    }
-
-    var tbody = "<tbody>"
-
-    for(j=0; j<Object.keys(imgmap).length; j++){
-
-        if((j+1)%4 == 1){
-            tbody+= "<tr>"
-        }
-        tbody+=`<td><label for="check_${j}" style="vertical-align:bottom"><img src="${imgmap[placesmap[j]][0]}" width="150" height="150" id="img_${placesmap[j]}" data-img="${placesmap[j]}" style="transform: ${imgmap[placesmap[j]][1]}; filter: ${imgmap[placesmap[j]][2]};"><small>${placesmap[j]+1}</small></label><input type="checkbox" name="pagechecks" id="check_${j}" data-check="${j}">`;
-        tbody+="</td>";
-        if((j+1)%4 == 0){
-            tbody+= "</tr>"
-        }
-    }
-
-    if((j)%4 != 0){ //in case the loop ended on remainder 1-3
-        tbody+= "</tr>"
-    }
-
-    tbody+= "</tbody>"
-    document.getElementById("reorder_tb").innerHTML = tbody;
-
-    imgs = document.getElementsByTagName("img")
-    for (eachimg of imgs){
-        eachimg.addEventListener('dblclick', (e) => {console.log(e); window.open(e["target"].src,"_blank")})
-    }
-    
-}
-//********************************************************************************************* */
-ui.moveonepage = function(leftright){
-
-    var moverate = (leftright == "ArrowRight")?1:-1;   
-
-    var pagechecks = document.getElementsByName("pagechecks");
-
-    var movercheck=0;
-    var moverimg = 0;
-    var placesmap = new Object();
-    var imgmap = new Object();
-    var wheremove = 0;
-    var j = 0;
-
-    for (let eachpage of pagechecks){
-        placesmap[parseInt(eachpage.dataset.check)] = parseInt(eachpage.previousSibling.firstChild.dataset.img);
-        imgmap[parseInt(eachpage.previousSibling.firstChild.dataset.img)] = [eachpage.previousSibling.firstChild.src,eachpage.previousSibling.firstChild.style.transform,eachpage.previousSibling.firstChild.style.filter];
-    }
-
-    for (let eachpage of pagechecks){
-        if(eachpage.checked == true){
-
-            movercheck = parseInt(eachpage.dataset.check)  //mover's current place
-
-            moverimg = placesmap[movercheck]//movers id
-
-            wheremove = Math.min(Math.max(movercheck + moverate,0),Object.keys(placesmap).length-1) //movement no less than to 0 and no more than to last page
-           
-            if (wheremove == movercheck){ //if no where to move, stop
-                return
-            }
-
-            if (moverate < 0){
-                let currentimg_in_place = placesmap[wheremove]
-                placesmap[wheremove+1] = currentimg_in_place
-            }
-            else if (moverate > 0){
-                let currentimg_in_place = placesmap[wheremove]
-                placesmap[wheremove-1] = currentimg_in_place
-            }
-            
-            placesmap[wheremove] = moverimg
-            
-            eachpage.checked = false
-        }
-    }
-    
-    var tbody = "<tbody>"
-
-    for(j=0; j<Object.keys(imgmap).length; j++){
-
-        if((j+1)%4 == 1){
-            tbody+= "<tr>"
-        }
-        tbody+=`<td><label for="check_${j}" style="vertical-align:bottom"><img src="${imgmap[placesmap[j]][0]}" width="150" height="150" id="img_${placesmap[j]}" data-img="${placesmap[j]}" style="transform: ${imgmap[placesmap[j]][1]}; filter: ${imgmap[placesmap[j]][2]};"><small>${placesmap[j]+1}</small></label><input type="checkbox" name="pagechecks" id="check_${j}" data-check="${j}">`;
-        tbody+="</td>";
-        if((j+1)%4 == 0){
-            tbody+= "</tr>"
-        }
-    }
-
-    if((j)%4 != 0){ //in case the loop ended on remainder 1-3
-        tbody+= "</tr>"
-    }
-
-    tbody+= "</tbody>"
-    document.getElementById("reorder_tb").innerHTML = tbody;
-
-    imgs = document.getElementsByTagName("img")
-    for (eachimg of imgs){
-        eachimg.addEventListener('dblclick', (e) => {console.log(e); window.open(e["target"].src,"_blank")})
-    }
-    
-    document.getElementById("check_" + wheremove).checked = true
-    
-}
-
 //********************************************************************************************** */
-ui.finalizereorder = function(){
-    var xhr = new XMLHttpRequest();
+myfunc.finalizereorder = async function(){
     var fdata = new FormData();
     var placesobj = {};
-    var pagechecks = document.getElementsByName("pagechecks");
+    var tds = document.getElementById("reorder_tb").getElementsByTagName("TD");
     const regex = /[0-9]/g;
 
-    for (let eachpage of pagechecks){
-        let rotatestage = eachpage.previousSibling.firstChild.style.transform
+    for (let td of tds){
+        let rotatestage = td.firstChild.style.transform
         let rotate = rotatestage.match(regex).join('')
-        let deletestage = eachpage.previousSibling.firstChild.style.filter
+        let deletestage = td.firstChild.style.filter
 
-        placesobj[eachpage.dataset.check] = [eachpage.previousSibling.firstChild.dataset.img,rotate,(deletestage == 'blur(0px)')?0:1]
+        placesobj[td.dataset.ind] = [td.firstChild.dataset.img,rotate,(deletestage == 'blur(0px)')?0:1]
     }
 
     fdata.append("request","reorder_commit");
@@ -701,50 +540,33 @@ ui.finalizereorder = function(){
 
     fdata.append('uploadpdf',document.getElementById("upload_reorder").files[0]);
 
-    xhr.open('POST',"http://localhost:"+ui.port,true)
-
-    document.getElementById("loader").style.display='block'; //display loader
-
-    xhr.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {   
-            console.log(this.responseText)
-
-            document.getElementById("loader").style.display='none'; //display loader
-            
-            //alert(this.responseText)
-
-            resobj = JSON.parse(this.responseText);
-
-            ui.download(resobj[0],resobj[1])
-        }
-        else if (this.readyState == 4 && this.status != 200){
-            alert(this.responseText)
-        }
-
+    const resobj = await myfunc.sendrequest(fdata)
+    if ( resobj[0] == "Error"){
+        myfunc.msg( resobj[0], resobj[1])
     }
-
-    xhr.send(fdata);
+    else{
+        myfunc.download(resobj[0],resobj[1])
+    }
 }
 //********************************************************************************************* */
-ui.selectall = function(){
+myfunc.selectall = function(){
 
-    var pagechecks = document.getElementsByName("pagechecks");
+    var pagechecks = document.getElementsByClassName("checked");
 
     if (pagechecks[0].checked == true){
         for (let eachpage of pagechecks){
-            eachpage.checked = false
+            eachpage.classList.remove("checked")
         }
     }
     else{
         for (let eachpage of pagechecks){
-            eachpage.checked = true
+            eachpage.classList.add("checked")
         }
     }
 
 }
 //********************************************************************************************* */
-ui.ocrfile_upload = function(){
-    var xhr = new XMLHttpRequest();
+myfunc.ocrfile_upload = async function(){
     var fdata = new FormData();
 
     if(document.getElementById("ocrfile_upload").files.length == 0){
@@ -754,41 +576,26 @@ ui.ocrfile_upload = function(){
     fdata.append("request", "firstpage");
     fdata.append("pdffile",document.getElementById("ocrfile_upload").files[0])
 
-    xhr.open('POST',"http://localhost:"+ui.port,true)
-
-    document.getElementById("loader").style.display='block'; //display loader
-
-    xhr.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {   
-            console.log(this.responseText)
-
-            document.getElementById("loader").style.display='none'; //hide loader
-
-            resobj = JSON.parse(this.responseText);
-
-            document.getElementById("onepage").innerHTML=`<img width='300' height='424' src=${resobj} id="firstpage" style="w3-border">`
-        }
-        else if (this.readyState == 4 && this.status != 200){
-            alert(this.responseText)
-        }
-
+    const resobj = await myfunc.sendrequest(fdata)
+    if ( resobj[0] == "Error"){
+        myfunc.msg( resobj[0], resobj[1])
     }
-
-    xhr.send(fdata);  
+    else{
+        document.getElementById("onepage").innerHTML=`<img width='300' height='424' src=${resobj} id="firstpage" style="w3-border">`
+    }
 }
 //********************************************************************************************* */
-ui.rollangle = function(){
+myfunc.rollangle = function(){
     document.getElementById("firstpage").style.transform = `rotate(${document.getElementById("rollangle").value}deg)`
     document.getElementById("rollangle_val").innerHTML=document.getElementById("rollangle").value
 }
 //********************************************************************************************* */
-ui.brighten = function(){
+myfunc.brighten = function(){
     document.getElementById("firstpage").style.filter = `brightness(${document.getElementById("brightness").value})`
     document.getElementById("brightness_val").innerHTML=document.getElementById("brightness").value
 }
 //********************************************************************************************* */
-ui.doocr = function(onepage){
-    var xhr = new XMLHttpRequest();
+myfunc.doocr = async function(onepage){
     var fdata = new FormData();
 
     if(document.getElementById("ocrfile_upload").files.length == 0){
@@ -801,47 +608,15 @@ ui.doocr = function(onepage){
     fdata.append("rollangle", document.getElementById("rollangle").value);
     fdata.append("brightness", document.getElementById("brightness").value);
 
-    xhr.open('POST',"http://localhost:"+ui.port,true)
-
-    document.getElementById("loader").style.display='block'; //display loader
-
-    xhr.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {   
-            console.log(this.responseText)
-
-            document.getElementById("loader").style.display='none'; //hide loader
-
-            resobj = JSON.parse(this.responseText);
-
-            ui.download(resobj[0],resobj[1])
-
-        }
-        else if (this.readyState == 4 && this.status != 200){
-            alert(this.responseText)
-        }
-
+    const resobj = await myfunc.sendrequest(fdata)
+    if ( resobj[0] == "Error"){
+        myfunc.msg( resobj[0], resobj[1])
     }
-
-    xhr.send(fdata);  
+    else{
+         myfunc.download(resobj[0],resobj[1])
+    }
 }
 
-//********************************************************************************************* */
-ui.download = function(filename, filetext){
 
-    var a = document.createElement("a");
-
-    document.body.appendChild(a);
-
-    a.style = "display: none";
-
-    a.href = 'data:application/octet-stream;base64,' + filetext;
-
-    a.download = filename;
-
-    a.click();
-
-    document.body.removeChild(a);
-
-}
 
 

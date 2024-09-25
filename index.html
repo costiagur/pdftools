@@ -34,10 +34,15 @@
       100% { transform: rotate(360deg); }
       }
       
-     h2, h5 {
+    h2, h5 {
         text-align: center;
       }
-
+      .checked {
+        border-color: red;
+        border-width: thick;
+      }
+      dialog {border-style: outset; background-color:LightGray}
+      fieldset{border-style: outset;}
   </style>
 </head>
 
@@ -46,11 +51,18 @@
     <div id="loader" class="loader" style="display: none;"></div> <!--circle displayed while working-->
     <h2>PDF File Manipulation Tools</h2>
     <h5>All the tools assume use of pdf files</h5>
+    <dialog id="msg_dg">
+      <fieldset><strong><legend id="msg_title"></strong></legend>
+        <p id="msg_txt"></p>
+        <button onclick="msg_dg.close();msg_txt.innerHTML = '';msg_title.innerHTML =''" class="w3-button w3-border w3-round">Close</button>
+    </fieldset>
+    </dialog>
+
     <div class="w3-cell-row">
     <div class="w3-container w3-cell">
     <table>
         <tr>
-          <td onclick="ui.combinefromfolder()">Merge pdf files in a folder and subfolders</td>
+          <td onclick="myfunc.combinefromfolder()">Merge pdf files in a folder and subfolders</td>
         </tr>
         <tr>
           <td onclick="document.getElementById('upload_pagenum').click()">Add page numbers to one pdf file</td>
@@ -66,9 +78,9 @@
               </select>
             </p>
             <menu>
-              <button id="cancel_bt" class="w3-button" onclick="ui.encodepdf('Cancel')">Cancel</button>
+              <button id="cancel_bt" class="w3-button" onclick="myfunc.encodepdf('Cancel')">Cancel</button>
               &nbsp;
-              <button id="ok_bt" class="w3-button" onclick="ui.encodepdf('Ok')">Ok</button>
+              <button id="ok_bt" class="w3-button" onclick="myfunc.encodepdf('Ok')">Ok</button>
             </menu>
           </dialog>
         </tr>
@@ -84,71 +96,50 @@
         <tr>
           <td onclick="document.getElementById('watermark_diag').showModal()" >Watermark one pdf file</td>
           <dialog id="watermark_diag">
-            <div class="w3-container">
             <div class="w3-container w3-cell">
-                <p><Label for="upload_waterclean">Get orginal file to mark</label></p>
-                <p><Label for="upload_watermark">Get pdf file to mark with</label></p>
+                <Label for="upload_waterclean">Get orginal file to mark</label> &nbsp;
+                <input type="file" id="upload_waterclean">
             </div>
             <div class="w3-container w3-cell">
-              <p><input type="file" id="upload_waterclean"></p>
-              <p><input type="file" id="upload_watermark"></p>
+              <Label for="upload_watermark">Get marked pdf file</label> &nbsp;
+              <input type="file" id="upload_watermark">
             </div>
 
             <menu>
-              <div class="w3-container w3-cell">
-                <button class="w3-btn w3-round-large w3-border" onclick="document.getElementById('watermark_diag').close()">Cancel</button>
-              </div>
-              <div class="w3-container w3-cell">
-                <button class="w3-btn w3-round-large w3-border" onclick="ui.watermark()">Run</button>
-              </div>
+              <button class="w3-btn" onclick="document.getElementById('watermark_diag').close()">Cancel</button>
+              &nbsp;
+              <button class="w3-btn" onclick="myfunc.watermark()">Run</button>
             </menu>
-            </div>
           </dialog>
         </tr>
         <tr>
           <td onclick="document.getElementById('renamebyregex_diag').showModal()">Rename pdf files by Regular Expression</td>
           <dialog id="renamebyregex_diag">
-            <div class="w3-container">           
             <p>
               Before running the function, you should test the text that is extracted from a pdf file, to be able to apply the proper regular expression
               For this end choose TEST button. For running the renaming process choose RENAME button. 
             </p>
-            <div class="w3-cell-row" style="width:75%">
-
-              <div class="w3-container w3-cell">
-                <p><label for="upload_renamebyregex">Choose files to rename or test text extraction before renaming</label></p>
-                <p><label for="regexcode">Input your regex code here to run the renaming</label></p>
-              </div>
-            
-              <div class="w3-container w3-cell">
-                <p><input type="file" id="upload_renamebyregex" multiple></p>
-                <p><input type="text" id="regexcode"></p>
-              </div>
-            </div>
+            <p>
+              <label for="upload_renamebyregex">Choose files to rename or test text extraction before renaming</label>
+              <input type="file" id="upload_renamebyregex" multiple>
+            </p>
             <menue>
-              <div class="w3-container w3-cell">
-                <p><button class="w3-btn w3-round-large w3-border" onclick="document.getElementById('renamebyregex_diag').close()">Cancel</button></p>
-              </div>
-              <div class="w3-container w3-cell">
-                <p><button class="w3-btn w3-round-large w3-border" onclick="ui.renamebyregex('test')">TEST</button></p>
-              </div>
-              <div class="w3-container w3-cell">
-                <p><button class="w3-btn w3-round-large w3-border" onclick="ui.renamebyregex('run')">RENAME</button></p>
-              </div>              
+              <button class="w3-btn" onclick="document.getElementById('renamebyregex_diag').close()">Cancel</button>
+              &nbsp;
+              <button class="w3-btn" onclick="myfunc.renamebyregex('test')">TEST</button>
+              &nbsp;
+              <button class="w3-btn" onclick="myfunc.renamebyregex('run')">RENAME</button>
             </menue>
-          </div>
           </dialog>
         </tr>
         <tr>
           <td onclick="document.getElementById('upload_reorder').click()">Reorder one pdf file</td>
         </tr>
         <tr id='reorderbts' style="display: none;">
-          <td onclick="ui.selectall()">Select All</td>
-          <td onclick="ui.rotatepage()">Rotate</td>
-          <td onclick="ui.delpage()">Delete</td>
-          <td onclick="ui.movepage()">Move</td>
-          <td><input type="number" id="move_in" value="0" size="4"></td>
-          <td onclick="ui.finalizereorder()">Do</td>
+          <td onclick="myfunc.selectall()">Select All</td>
+          <td onclick="myfunc.rotatepage()">Rotate</td>
+          <td onclick="myfunc.delpage()">Delete</td>
+          <td onclick="myfunc.finalizereorder()">Update</td>
         </tr>
         <tr>
           <td onclick="document.getElementById('ocr_diag').showModal()">OCR one pdf file</td>
@@ -156,22 +147,22 @@
             <p>Test one page before running on the entire file</p>
             <p>
             <label for="ocrfile_upload">Select one pdf file</label>
-            <input type="file" id="ocrfile_upload" onchange="ui.ocrfile_upload()">
+            <input type="file" id="ocrfile_upload" onchange="myfunc.ocrfile_upload()">
             <menue>
               <button onclick="ocr_diag.close()">Cancel</button>
-              <button onclick="ui.doocr(true)">Test one page</button>
-              <button onclick="ui.doocr(false)">Entire File</button>
+              <button onclick="myfunc.doocr(true)">Test one page</button>
+              <button onclick="myfunc.doocr(false)">Entire File</button>
             </menue>
           </p>
             <p>
             <menue>
               <div>
-                <input type="range" id="rollangle" min="0" max="360" value="0" onchange="ui.rollangle()">
+                <input type="range" id="rollangle" min="0" max="360" value="0" onchange="myfunc.rollangle()">
                 <label for="rollangle">Roll Angle &nbsp;<span id="rollangle_val"></span></label>
               </div>
               <br><br>
               <div>
-                <input type="range" id="brightness" min="0" max="3" step="0.1" value="1" onchange="ui.brighten()">
+                <input type="range" id="brightness" min="0" max="3" step="0.1" value="1" onchange="myfunc.brighten()">
                 <label for="brightness">Brightness &nbsp; <span id="brightness_val"></span></label>
               </div>
               <br><br>
@@ -192,12 +183,12 @@
   <br>  
   
   <div class="w3-container" hidden>
-    <input type="file" id="upload_pagenum" onchange="ui.addpagenums()">
+    <input type="file" id="upload_pagenum" onchange="myfunc.addpagenums()">
     <input type="file" id="upload_encodepdf" onchange="document.getElementById('askendecrypt').showModal()">
-    <input type="file" id="upload_mergepdfs" multiple onchange="ui.mergepdfs()">
-    <input type="file" id="upload_splitpdf" onchange="ui.splitpdf()">
-    <input type="file" id="upload_splitbyn" onchange="ui.splitbyn()">
-    <input type="file" id="upload_reorder" onchange="ui.reorder_showdoc()">
+    <input type="file" id="upload_mergepdfs" multiple onchange="myfunc.mergepdfs()">
+    <input type="file" id="upload_splitpdf" onchange="myfunc.splitpdf()">
+    <input type="file" id="upload_splitbyn" onchange="myfunc.splitbyn()">
+    <input type="file" id="upload_reorder" onchange="myfunc.reorder_showdoc()">
 
   </div>  
 

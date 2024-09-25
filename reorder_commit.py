@@ -1,7 +1,10 @@
-from PyPDF2 import PdfFileReader, PdfFileWriter
+import json
+import tkinter
 from io import BytesIO
 from tkinter import messagebox
-import tkinter
+
+from PyPDF2 import PdfFileReader, PdfFileWriter
+
 
 def reorder_commit(uploadfile,placesdict):
     
@@ -41,12 +44,7 @@ def reorder_commit(uploadfile,placesdict):
         return resfiledata
 
     except Exception as e:
-        root = tkinter.Tk()
-        root.attributes("-topmost", 1)
-        messagebox.showerror(title="reorder_commit",message=e)
-        root.destroy()
-        root.mainloop()
-
+        replymsg = json.dumps(["Error",__name__+" -" + str(e)]).encode('UTF-8')
+        return replymsg
     #
-   
-#    
+#

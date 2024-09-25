@@ -1,9 +1,13 @@
-from PyPDF2 import PdfFileReader, PdfFileWriter
-from io import BytesIO
-from tempfile import NamedTemporaryFile
-from os import unlink, path, replace
+import json
 import zipfile
+from io import BytesIO
+from os import path, replace, unlink
+from tempfile import NamedTemporaryFile
+
+from PyPDF2 import PdfFileReader, PdfFileWriter
+
 import common
+
 
 def splitbyn(inipdffile,n):
     try:
@@ -89,13 +93,14 @@ def splitbyn(inipdffile,n):
             resbytes = res.read()
             res.close()
             unlink(zipbite.name)
-        #        
+        #
 
         return resbytes
 
     #
     except Exception as e:
         common.errormsg(title=__name__,message=e)
-        return b'Error: ' + str(e).encode() 
+        replymsg = json.dumps(["Error",__name__+"-" + str(e)]).encode('UTF-8')
+        return replymsg
     #
 #

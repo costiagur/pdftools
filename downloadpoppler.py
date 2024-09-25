@@ -1,8 +1,11 @@
+import json
 import os
 import urllib.request
 import zipfile
 from tempfile import NamedTemporaryFile
+
 import common
+
 
 def downloadpoppler():
 
@@ -47,8 +50,9 @@ def downloadpoppler():
     #
 
     except Exception as e:
-        common.errormsg(title=__name__,message=e)
-        return 0
+        #common.errormsg(title=__name__,message=e)
+        replymsg = json.dumps(["Error",__name__+" -" + str(e)]).encode('UTF-8')
+        return replymsg
 
     #
 #
