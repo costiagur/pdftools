@@ -1,12 +1,13 @@
-from io import BytesIO
-from tempfile import NamedTemporaryFile
-from os import unlink,replace, path
-import common
+import json
 import re
+from io import BytesIO
+from os import environ, path, replace, unlink
+from tempfile import NamedTemporaryFile
 from zipfile import ZipFile
-#from tika import parser
-#from os import environ
-import fitz
+
+from tika import parser
+
+import common
 
 
 def renamebyregex(filesdict,regexstr):
@@ -16,23 +17,15 @@ def renamebyregex(filesdict,regexstr):
         regcomp = re.compile(regexstr,re.MULTILINE)
         mainzipf = NamedTemporaryFile(mode="w+b",delete=False)
 
-#        environ["TIKA_SERVER_JAR"] = "file://tikaserver/tika-server.jar"
+        environ["TIKA_SERVER_JAR"] = "file://tikaserver/tika-server.jar"
 
         with ZipFile(mainzipf.name,'a') as myzip:
 
             for key in filesdict.keys():
             
-                #reader = parser.from_buffer(BytesIO(filesdict[key][1]),xmlContent=True)
+                reader = parser.from_buffer(BytesIO(filesdict[key][1]),xmlContent=True)     
 
-                doc = fitz.Document(stream=BytesIO(filesdict[key][1]))
-                text = ""
-                
-                for page in doc:
-                    text += page.get_text()
-                #
-
-                #relist = regcomp.findall(reader["content"])
-                relist = regcomp.findall(text)
+                relist = regcomp.findall(reader["content"])
                 
                 newname = ""
 
@@ -73,7 +66,8 @@ def renamebyregex(filesdict,regexstr):
     #
 
     except Exception as e:
-        common.errormsg(title=__name__,message=e)
-        return b'Error: ' + str(e).encode()
-   #
+        #common.errormsg(title=__name__,message=e)
+        replymsg = json.dumps(["Error",__name__+" -" + str(e)]).encode('UTF-8')
+        return replymsg
+    #
 #

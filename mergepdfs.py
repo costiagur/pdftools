@@ -1,8 +1,12 @@
-from PyPDF2 import PdfFileMerger
+import json
 from io import BytesIO
+from os import path, replace, unlink
 from tempfile import NamedTemporaryFile
-from os import unlink,path,replace
+
+from PyPDF2 import PdfFileMerger
+
 import common
+
 
 def mergepdfs(filesdict):
 
@@ -36,7 +40,8 @@ def mergepdfs(filesdict):
         return resbytes
 
     except Exception as e:
-        common.errormsg(title=__name__,message=e)
-        return b'Error: ' + str(e).encode()
-   #
+        #common.errormsg(title=__name__,message=e)
+        replymsg = json.dumps(["Error",__name__+" -" + str(e)]).encode('UTF-8')
+        return replymsg
+    #
 #

@@ -1,8 +1,11 @@
+import json
 import tkinter
-from tkinter import filedialog, messagebox
-from PyPDF2 import PdfFileMerger
+from os import path, replace, unlink, walk
 from tempfile import NamedTemporaryFile
-from os import unlink,path,replace,walk
+from tkinter import filedialog, messagebox
+
+from PyPDF2 import PdfFileMerger
+
 
 def combinefromfolder():
 
@@ -13,12 +16,7 @@ def combinefromfolder():
         merger = PdfFileMerger()
         resfile = NamedTemporaryFile(mode="w+b",delete=False,suffix=".pdf", prefix="result")
 
-        #print("searchdir: " + searchdir)
-
         for upperdir, dirs, files in walk(top=searchdir, topdown=False):
-            #print("files: " + str(files))
-            #print("dirs: " + str(dirs))
-            #print("upperdir: " + str(upperdir))
 
             if files: #if list is not empty
                 for eachfile in files:
@@ -52,10 +50,7 @@ def combinefromfolder():
     #
 
     except Exception as e:
-        root = tkinter.Tk()
-        root.attributes("-topmost", 1)
-        messagebox.showerror(title="combinefromfolder",message=e)
-        root.destroy()
-        root.mainloop()
+        replymsg = json.dumps(["Error",__name__+" -" + str(e)]).encode('UTF-8')
+        return replymsg
     #
 #
