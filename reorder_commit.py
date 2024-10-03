@@ -22,7 +22,9 @@ def reorder_commit(uploadfile,placesdict):
             if placesdict[key][2] == 1: #page should be deleted
                 pass
             else:
-                pdfWriter.addPage(pdfReader.getPage(int(placesdict[key][0])))
+                page = pdfReader.getPage(int(placesdict[key][0]))
+                page.compress_content_streams()
+                pdfWriter.addPage(page)
                 
                 if placesdict[key][1] != '0': #page should be rotated
                     pdfWriter.pages[i].rotate(int(placesdict[key][1]))

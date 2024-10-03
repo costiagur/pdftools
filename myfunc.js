@@ -228,7 +228,6 @@ myfunc.splitpdf = async function(){
 }
 //********************************************************************************************* */
 myfunc.splitbyn = async function(){
-    var xhr = new XMLHttpRequest();
     var fdata = new FormData();
 
     fdata.append("request","splitbyn");
@@ -242,6 +241,29 @@ myfunc.splitbyn = async function(){
     }
 
     fdata.append('splitn',splitn);
+
+    const resobj = await myfunc.sendrequest(fdata)
+    if ( resobj[0] == "Error"){
+        myfunc.msg(resobj[0], resobj[1])
+    }
+    else{
+        if (atob(resobj[1]) == 'saved'){
+            myfunc.msg('Info','saved to folder')
+            return
+        }
+        else{
+            myfunc.download(resobj[0],resobj[1])
+        }
+
+    }
+}
+//********************************************************************************************* */
+myfunc.addblankpage = async function(){
+    var fdata = new FormData();
+
+    fdata.append("request","addblankpage");
+    
+    fdata.append('uploadpdf',document.getElementById("upload_addblankpage").files[0]);
 
     const resobj = await myfunc.sendrequest(fdata)
     if ( resobj[0] == "Error"){
