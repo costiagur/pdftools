@@ -2,6 +2,7 @@ import base64
 import json
 
 import common
+from addblankpage import addblankpage
 from addpagenums import addpagenums
 from combinefromfolder import combinefromfolder
 from do_ocr import do_ocr
@@ -88,6 +89,13 @@ def myfunc(queryobj):
             file64dec = file64enc.decode()
             replymsg = json.dumps(["result.pdf",file64dec]).encode('UTF-8')
         #
+
+        elif postdict["request"] == "addblankpage":
+            file64enc = base64.b64encode(addblankpage(filesdict["uploadpdf"][1]))
+            file64dec = file64enc.decode()
+            replymsg = json.dumps(["result.pdf",file64dec]).encode('UTF-8')
+        #
+
 
         elif postdict["request"] == "renamebyregex":
             if downloadtika() == 1:

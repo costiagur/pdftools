@@ -94,6 +94,9 @@
           <td onclick="document.getElementById('upload_splitbyn').click()">Split pdf file each n pages</td>
         </tr>
         <tr>
+          <td onclick="document.getElementById('upload_addblankpage').click()">Add blank page</td>
+        </tr>
+        <tr>
           <td onclick="document.getElementById('watermark_diag').showModal()" >Watermark one pdf file</td>
           <dialog id="watermark_diag">
             <div class="w3-container w3-cell">
@@ -188,6 +191,7 @@
     <input type="file" id="upload_mergepdfs" multiple onchange="myfunc.mergepdfs()">
     <input type="file" id="upload_splitpdf" onchange="myfunc.splitpdf()">
     <input type="file" id="upload_splitbyn" onchange="myfunc.splitbyn()">
+    <input type="file" id="upload_addblankpage" onchange="myfunc.addblankpage()">
     <input type="file" id="upload_reorder" onchange="myfunc.reorder_showdoc()">
 
   </div>  
