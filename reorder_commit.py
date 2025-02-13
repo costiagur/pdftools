@@ -3,50 +3,46 @@ import tkinter
 from io import BytesIO
 from tkinter import messagebox
 
-from PyPDF2 import PdfFileReader, PdfFileWriter
+from PyPDF2 import PdfReader, PdfWriter
 
 
 def reorder_commit(uploadfile,placesdict):
     
-    try:
 
-        initialfile = BytesIO(uploadfile)
-        targetfile = BytesIO()
+    initialfile = BytesIO(uploadfile)
+    targetfile = BytesIO()
 
-        pdfReader = PdfFileReader(initialfile)
-        pdfWriter = PdfFileWriter()
+    pdfReader = PdfReader(initialfile)
+    pdfWriter = PdfWriter()
 
-        i = 0
+    i = 0
 
-        for key in placesdict:
-            if placesdict[key][2] == 1: #page should be deleted
-                pass
-            else:
-                page = pdfReader.getPage(int(placesdict[key][0]))
-                page.compress_content_streams()
-                pdfWriter.addPage(page)
+    for key in placesdict:
+        if placesdict[key][2] == 1: #page should be deleted
+            pass
+        else:
+            page = pdfReader.pages[int(placesdict[key][0])]
+            page.compress_content_streams()
+            pdfWriter.add_page(page)
                 
-                if placesdict[key][1] != '0': #page should be rotated
-                    pdfWriter.pages[i].rotate(int(placesdict[key][1]))
-                #
-                i = i+1
+            if placesdict[key][1] != '0': #page should be rotated
+                pdfWriter.pages[i].rotate(int(placesdict[key][1]))
             #
+            i = i+1
         #
+    #
         
-        pdfWriter.write(targetfile)
+    pdfWriter.write(targetfile)
 
-        initialfile.close()
+    initialfile.close()
         
-        targetfile.seek(0)
+    targetfile.seek(0)
 
-        resfiledata = targetfile.read()
+    resfiledata = targetfile.read()
 
-        targetfile.close()
+    targetfile.close()
 
-        return resfiledata
+    return resfiledata
 
-    except Exception as e:
-        replymsg = json.dumps(["Error",__name__+" -" + str(e)]).encode('UTF-8')
-        return replymsg
     #
 #

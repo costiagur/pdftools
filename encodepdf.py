@@ -3,27 +3,25 @@ from io import BytesIO
 from os import path, replace, unlink
 from tempfile import NamedTemporaryFile
 
-from PyPDF2 import PdfFileReader, PdfFileWriter
+from PyPDF2 import PdfReader, PdfWriter
 
 import common
 
 
 def encodepdf(password, endecrypt_sel, uploadpdfs):
 
-    try:
-
         initialfile = BytesIO(uploadpdfs)
         resfile = NamedTemporaryFile(mode="w+b",delete=False,suffix=".pdf", prefix="result")
 
-        pdfReader = PdfFileReader(initialfile)
-        pdfWriter = PdfFileWriter()
+        pdfReader = PdfReader(initialfile)
+        pdfWriter = PdfWriter()
         
         if endecrypt_sel == 'decrypt' and pdfReader.is_encrypted:
             pdfReader.decrypt(password)
         #    
         
         for i in range(0,pdfReader.numPages): 
-            pdfWriter.addPage(pdfReader.getPage(i))
+            pdfWriter.add_page(pdfReader.pages[i])
         #
         
         if endecrypt_sel == 'encrypt':
@@ -49,9 +47,5 @@ def encodepdf(password, endecrypt_sel, uploadpdfs):
 
         return resbytes
 
-    except Exception as e:
-        #common.errormsg(title=__name__,message=e)
-        replymsg = json.dumps(["Error",__name__+" -" + str(e)]).encode('UTF-8')
-        return replymsg    #
 
 #

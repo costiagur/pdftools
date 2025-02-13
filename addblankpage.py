@@ -1,26 +1,26 @@
 import json
 from io import BytesIO
 
-from PyPDF2 import PdfFileReader, PdfFileWriter
+from PyPDF2 import PdfReader, PdfWriter
 
 
 def addblankpage(uploadfile):
     
-    try:
+    #try:
 
         initialfile = BytesIO(uploadfile)
         targetfile = BytesIO()
 
-        pdfReader = PdfFileReader(initialfile)
-        pdfWriter = PdfFileWriter()
+        pdfReader = PdfReader(initialfile)
+        pdfWriter = PdfWriter()
 
         for i, eachpage in enumerate(pdfReader.pages):
-                pdfWriter.addPage(eachpage)
+                pdfWriter.add_page(eachpage)
         #
 
         newpage = pdfReader.pages[i-1].create_blank_page(pdfReader)
 
-        pdfWriter.addPage(newpage)
+        pdfWriter.add_page(newpage)
 
         pdfWriter.write(targetfile)
 
@@ -34,8 +34,8 @@ def addblankpage(uploadfile):
 
         return resfiledata
 
-    except Exception as e:
-        replymsg = json.dumps(["Error",__name__+" -" + str(e)]).encode('UTF-8')
-        return replymsg
+    #except Exception as e:
+    #    replymsg = json.dumps(["Error",__name__+" -" + str(e)]).encode('UTF-8')
+    #    return replymsg
     
 #

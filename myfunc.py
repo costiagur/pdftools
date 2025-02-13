@@ -23,7 +23,7 @@ CODESTR = "mypypdftools"
 
 def myfunc(queryobj):   
 
-    try:
+    #try:
         replymsg = ''
         postdict = queryobj._POST()
         filesdict = queryobj._FILES()
@@ -36,7 +36,11 @@ def myfunc(queryobj):
         if postdict["request"] == "combinefromfolder":
             file64enc = base64.b64encode(combinefromfolder())
             file64dec = file64enc.decode()
-            replymsg = json.dumps(["result.pdf",file64dec]).encode('UTF-8')
+            if file64dec == 'saved':
+                replymsg = json.dumps(['saved','']).encode('UTF-8')    
+            else:
+                replymsg = json.dumps(["result.pdf",file64dec]).encode('UTF-8')
+            #
 
         #
         elif postdict["request"] == "addpagenums":
@@ -54,9 +58,13 @@ def myfunc(queryobj):
         elif postdict["request"] == "mergepdfs":
             file64enc = base64.b64encode(mergepdfs(filesdict))
             file64dec = file64enc.decode()
-            replymsg = json.dumps(["result.pdf",file64dec]).encode('UTF-8')
-
+            if file64dec == 'saved':           
+                replymsg = json.dumps(['saved','']).encode('UTF-8')    
+            else:           
+                replymsg = json.dumps(["result.pdf",file64dec]).encode('UTF-8')
+            #
         #
+        
         elif postdict["request"] == "splitpdf":
             splitlist = json.loads(postdict["splitlist"])
 
@@ -130,9 +138,9 @@ def myfunc(queryobj):
         return replymsg
     #
 
-    except Exception as e:
+    #except Exception as e:
         #common.errormsg(title=__name__,message=e)
-        replymsg = json.dumps(["Error",__name__+" -" + str(e)]).encode('UTF-8')
-        return replymsg
+        #replymsg = json.dumps(["Error",__name__+" -" + str(e)]).encode('UTF-8')
+        #return replymsg
     #
 #

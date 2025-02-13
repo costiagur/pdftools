@@ -3,7 +3,7 @@ from io import BytesIO
 from os import environ
 
 import tika
-from PyPDF2 import PdfFileReader
+from PyPDF2 import PdfReader
 from tika import parser
 
 import common

@@ -81,14 +81,12 @@ myfunc.combinefromfolder = async function(){ //request can be insert or update
     if (resobj[0] == "Error"){
         myfunc.msg(resobj[0], resobj[1])
     }
+    else if (resobj[0] == 'saved'){
+        myfunc.msg('Info','saved to folder')
+        return
+    }
     else{
-        if (atob(resobj[1]) == 'saved'){
-            myfunc.msg('Info','saved to folder')
-            return
-        }
-        else{
-            myfunc.download(resobj[0],resobj[1])
-        }
+        myfunc.download(resobj[0],resobj[1])
     }
 }
 
@@ -179,16 +177,14 @@ myfunc.mergepdfs = async function(){
 
     const resobj = await myfunc.sendrequest(fdata)
     if ( resobj[0] == "Error"){
-        myfunc.msg( resobj[0], resobj[1])
+        myfunc.msg(resobj[0], resobj[1])
+    }
+    else if (resobj[0] == 'saved'){
+        myfunc.msg('Info','saved to folder')
+        return
     }
     else{
-        if (atob(resobj[1]) == 'saved'){
-            myfunc.msg('Info','saved to folder')
-            return
-        }
-        else{
-            myfunc.download(resobj[0],resobj[1])
-        }
+        myfunc.download(resobj[0],resobj[1])
     }
 }
 //********************************************************************************************* */
