@@ -4,7 +4,7 @@ from os import path, replace, unlink
 from tempfile import NamedTemporaryFile
 
 from fpdf import FPDF
-from PyPDF2 import PdfFileReader, PdfFileWriter
+from PyPDF2 import PdfReader, PdfWriter
 
 import common
 
@@ -14,15 +14,15 @@ def addpagenums(startpage, inipdffile):
     try:
         startpage = int(startpage)
  
-        pdfReader = PdfFileReader(BytesIO(inipdffile))
-        pdfWriter = PdfFileWriter()
+        pdfReader = PdfReader(BytesIO(inipdffile))
+        pdfWriter = PdfWriter()
         resfile= NamedTemporaryFile(mode="w+b",delete=False,suffix=".pdf", prefix="result")      
 
         infoobj = common.infopopup(common.root)
 
         for i in range(0,pdfReader.numPages):
 
-            currentpage = pdfReader.getPage(i)
+            currentpage = pdfReader.pages[i]
             currentpage.compress_content_streams()
 
             class myFPDF(FPDF):
@@ -51,12 +51,12 @@ def addpagenums(startpage, inipdffile):
 
             pagefile.seek(0)
 
-            pdfReadnumfile = PdfFileReader(pagefile)
-            numpage = pdfReadnumfile.getPage(0)
+            pdfReadnumfile = PdfReader(pagefile)
+            numpage = pdfReadnumfile.pages[0]
             numpage.compress_content_streams()
             currentpage.merge_page(numpage)
             currentpage.compress_content_streams()
-            pdfWriter.addPage(currentpage)
+            pdfWriter.add_page(currentpage)
             
             pdfWriter.write(resfile)
 

@@ -3,24 +3,24 @@ from io import BytesIO
 from os import path, replace, unlink
 from tempfile import NamedTemporaryFile
 
-from PyPDF2 import PdfFileReader, PdfFileWriter
+from PyPDF2 import PdfReader, PdfWriter
 
 import common
 
 
 def watermark(filesdict):
 
-    try:
+    #try:
         resfile = NamedTemporaryFile(mode="w+b",delete=False,suffix=".pdf", prefix="result")
 
-        cleanreader = PdfFileReader(BytesIO(filesdict['upload_waterclean'][1]))
-        writer = PdfFileWriter()
+        cleanreader = PdfReader(BytesIO(filesdict['upload_waterclean'][1]))
+        writer = PdfWriter()
 
         for eachpage in cleanreader.pages:
             mediabox = eachpage.mediabox
 
             # You need to load it again, as the last time it was overwritten
-            waterreader = PdfFileReader(BytesIO(filesdict['upload_watermark'][1])).pages[0]
+            waterreader = PdfReader(BytesIO(filesdict['upload_watermark'][1])).pages[0]
 
             waterreader.merge_page(eachpage)
             waterreader.mediabox = mediabox
@@ -48,9 +48,9 @@ def watermark(filesdict):
 
         return resbytes
 
-    except Exception as e:
+    #except Exception as e:
         #common.errormsg(title=__name__,message=e)
-        replymsg = json.dumps(["Error",__name__+" -" + str(e)]).encode('UTF-8')
-        return replymsg
+        #replymsg = json.dumps(["Error",__name__+" -" + str(e)]).encode('UTF-8')
+        #return replymsg
     #
 #

@@ -9,7 +9,7 @@ import common
 
 def downloadpoppler():
 
-    try:
+    #try:
         #mypath = os.environ['PATH']
         currentfolder =  os.path.dirname(os.path.realpath(__file__))
         currentfolderlist = currentfolder.split("\\")
@@ -49,10 +49,10 @@ def downloadpoppler():
         return res
     #
 
-    except Exception as e:
+    #except Exception as e:
         #common.errormsg(title=__name__,message=e)
-        replymsg = json.dumps(["Error",__name__+" -" + str(e)]).encode('UTF-8')
-        return replymsg
+        #replymsg = json.dumps(["Error",__name__+" -" + str(e)]).encode('UTF-8')
+        #return replymsg
 
     #
 #
